@@ -4,6 +4,17 @@ import { image } from "motion/react-client";
 
 const projects = [
   {
+    title: " E-Commerce Website",
+    image: "/ecommerce.png",
+    websiteUrl: "https://example-ecommerce-web.netlify.app",
+    category: "E-Commerce Website",
+    description:
+      "Website e-commerce yang dapat membantu anda lebih mudah dalam berjualan.",
+    stack: ["React", "Tailwind", "Vite"],
+    style: "cosmic",
+    label: "DESIGNED TO STAND OUT",
+  },
+  {
     title: "Al-Ahwan Profile",
     image: "/2.png",
     websiteUrl: "https://tahsin-al-ahwan.netlify.app",
@@ -585,6 +596,8 @@ function Contact() {
     },
   ];
 
+  const message = "Halo Zahran, saya tertarik berdiskusi soal project";
+  const whatsappUrl = `https://wa.me/6285971817873?text=${encodeURIComponent(message)}`;
   return (
     <section
       className="contact-section section-padding"
@@ -610,7 +623,9 @@ function Contact() {
 
         <a
           className="button button-primary"
-          href="mailto:muhammadmusfiraz11.com"
+          href={whatsappUrl}
+          target="_blank"
+          rel="noopener noreferrer"
         >
           Say hello <ArrowIcon />
         </a>
@@ -694,54 +709,54 @@ export default function App() {
           <span className="cosmic-meteor cosmic-meteor-six" />
           <span className="cosmic-meteor cosmic-meteor-seven" />
         </div>
-         </div>
-        <Navbar />
-
-        <main>
-          <ScrollReveal>
-            <Hero />
-          </ScrollReveal>
-
-          <ScrollReveal>
-            <About />
-          </ScrollReveal>
-
-          <ScrollReveal>
-            <Projects />
-          </ScrollReveal>
-
-          <ScrollReveal>
-            <Skills />
-          </ScrollReveal>
-
-          <ScrollReveal>
-            <CertificatesPage />
-          </ScrollReveal>
-
-          <ScrollReveal>
-            <Contact />
-          </ScrollReveal>
-        </main>
-
-        <Footer />
       </div>
-      );
+      <Navbar />
+
+      <main>
+        <ScrollReveal>
+          <Hero />
+        </ScrollReveal>
+
+        <ScrollReveal>
+          <About />
+        </ScrollReveal>
+
+        <ScrollReveal>
+          <Projects />
+        </ScrollReveal>
+
+        <ScrollReveal>
+          <Skills />
+        </ScrollReveal>
+
+        <ScrollReveal>
+          <CertificatesPage />
+        </ScrollReveal>
+
+        <ScrollReveal>
+          <Contact />
+        </ScrollReveal>
+      </main>
+
+      <Footer />
+    </div>
+  );
 }
 
-      function ScrollReveal({children, delay = 0}) {
+function ScrollReveal({ children, delay = 0 }) {
   return (
-      <motion.div
-        initial={{ opacity: 0, y: 28 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true, amount: 0.12 }}
-        transition={{
-          duration: 0.7,
-          ease: "easeOut",
-          delay,
-        }}
-        style={{ width: "100%" }}
-      >
-        {children}
-      </motion.div>
-      );
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.12 }}
+      transition={{
+        duration: 0.7,
+        ease: "easeOut",
+        delay,
+      }}
+      style={{ width: "100%" }}
+    >
+      {children}
+    </motion.div>
+  );
 }
