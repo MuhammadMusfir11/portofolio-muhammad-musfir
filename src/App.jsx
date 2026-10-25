@@ -1,6 +1,6 @@
-import { useState } from "react";
-import { motion } from "motion/react";
-import { image } from "motion/react-client";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
+import { motion, AnimatePresence } from "motion/react";
 
 const projects = [
   {
@@ -363,113 +363,218 @@ function ProjectPreview({ project }) {
   );
 }
 
+const TECH_ICONS = {
+  HTML: "https://cdn.simpleicons.org/html5/E34F26",
+  CSS: "https://cdn.simpleicons.org/css/1572B6",
+  JavaScript: "https://cdn.simpleicons.org/javascript/F7DF1E",
+  React: "https://cdn.simpleicons.org/react/61DAFB",
+  "Tailwind CSS": "https://cdn.simpleicons.org/tailwindcss/06B6D4",
+  Motion: "https://cdn.simpleicons.org/framer/0055FF",
+  Git: "https://cdn.simpleicons.org/git/F05032",
+  Vite: "https://cdn.simpleicons.org/vite/646CFF",
+};
+
+function SearchIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="11" cy="11" r="7" stroke="currentColor" strokeWidth="2" />
+      <path d="m20 20-3.5-3.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path d="M6 6l12 12M18 6 6 18" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function ProjectModal({ project, onClose }) {
+  return createPortal(
+    <motion.div
+      className="pj-backdrop"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+    >
+      <motion.div
+        className="pj-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="pj-modal-title"
+        initial={{ opacity: 0, y: 40, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 40, scale: 0.98 }}
+        transition={{ duration: 0.28, ease: "easeOut" }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          className="pj-close"
+          aria-label="Tutup detail project"
+          onClick={onClose}
+          autoFocus
+        >
+          <CloseIcon />
+        </button>
+
+        {/* Foto contoh website */}
+        <div className="pj-modal-media">
+          {project.image ? (
+            <img src={project.image} alt={`Tampilan website ${project.title.trim()}`} />
+          ) : (
+            <ProjectPreview project={project} />
+          )}
+        </div>
+
+        <div className="pj-modal-body">
+          <div className="pj-modal-text">
+            <span className="pj-modal-category">{project.category}</span>
+            <h3 id="pj-modal-title">{project.title.trim()}</h3>
+
+            {/* Deskripsi */}
+            <p className="pj-modal-desc">{project.description}</p>
+
+            {/* Teknologi yang dipakai */}
+            <div className="pj-stack">
+              {project.stack.map((item) => (
+                <span className="pj-tech" key={item}>
+                  {TECH_ICONS[item] && <img src={TECH_ICONS[item]} alt="" />}
+                  <span>{item}</span>
+                </span>
+              ))}
+            </div>
+          </div>
+
+          {/* Link website online + repository GitHub */}
+          <div className="pj-actions">
+            {project.websiteUrl ? (
+              <a
+                className="pj-btn pj-btn-primary"
+                href={project.websiteUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <GlobeIcon />
+                <span>Lihat Website</span>
+              </a>
+            ) : (
+              <span className="pj-btn pj-btn-disabled">
+                <GlobeIcon />
+                <span>Website belum tersedia</span>
+              </span>
+            )}
+
+            {project.githubUrl ? (
+              <a
+                className="pj-btn"
+                href={project.githubUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <GitHubIcon />
+                <span>Repository GitHub</span>
+              </a>
+            ) : (
+              <span className="pj-btn pj-btn-disabled">
+                <GitHubIcon />
+                <span>Repository belum tersedia</span>
+              </span>
+            )}
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>,
+    document.body
+  );
+}
+
 function Projects() {
+  const [activeProject, setActiveProject] = useState(null);
+
+  // Tutup dengan tombol Esc + kunci scroll halaman saat popup terbuka
+  useEffect(() => {
+    if (!activeProject) return;
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setActiveProject(null);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeProject]);
+
   return (
     <section className="projects-section section-padding" id="projects">
       <div className="container">
         <div className="projects-heading-row">
           <SectionHeading
-            title={
-              <>
-                <span className="gradient-text">My Projects</span>
-              </>
-            }
+            title={<span className="gradient-text">My Projects</span>}
             description="I made projects from company profile to portofolio website"
           />
         </div>
 
-        <div className="projects-grid">
+        <div className="pj-grid">
           {projects.map((project, index) => (
             <motion.article
-              className="project-card"
-              key={project.number}
+              className="pj-card"
+              key={project.title}
               initial={{ opacity: 0, y: 18 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.45, delay: index * 0.08 }}
+              transition={{ duration: 0.45, delay: (index % 3) * 0.08 }}
             >
-              {project.image ? (
-                <div className="project-image-preview">
+              <div className="pj-card-media">
+                {project.image ? (
                   <img
                     src={project.image}
-                    alt={`${project.title} website preview`}
-                    className="project-preview-image"
+                    alt=""
+                    loading="lazy"
                   />
-                </div>
-              ) : (
-                <ProjectPreview project={project} />
-              )}
-
-              <div className="project-info">
-                <div className="project-title-row">
-                  <div>
-                    <span className="project-category">{project.category}</span>
-                    <h3>{project.title}</h3>
-                  </div>
-                  <span className="project-number">{project.number}</span>
-                </div>
-
-                <p>{project.description}</p>
-
-                <div className="project-stack">
-                  {project.stack.map((item) => {
-                    const techIcons = {
-                      HTML: "https://cdn.simpleicons.org/html5/E34F26",
-                      CSS: "https://cdn.simpleicons.org/css/1572B6",
-                      JavaScript: "https://cdn.simpleicons.org/javascript/F7DF1E",
-                      React: "https://cdn.simpleicons.org/react/61DAFB",
-                      "Tailwind CSS": "https://cdn.simpleicons.org/tailwindcss/06B6D4",
-                      Motion: "https://cdn.simpleicons.org/framer/0055FF",
-                      Git: "https://cdn.simpleicons.org/git/F05032",
-                      Vite: "https://cdn.simpleicons.org/vite/646CFF",
-                    };
-
-                    return (
-                      <span className="project-tech" key={item}>
-                        {techIcons[item] && (
-                          <img
-                            src={techIcons[item]}
-                            alt=""
-                            className="project-tech-icon"
-                          />
-                        )}
-                        <span>{item}</span>
-                      </span>
-                    );
-                  })}
-                </div>
-
-                <div className="project-links">
-                  {project.websiteUrl && (
-                    <a
-                      className="project-link"
-                      href={project.websiteUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <GlobeIcon />
-                      <span>Website</span>
-                    </a>
-                  )}
-
-                  {project.githubUrl && (
-                    <a
-                      className="project-link"
-                      href={project.githubUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <GitHubIcon />
-                      <span>GitHub</span>
-                    </a>
-                  )}
-                </div>
-
+                ) : (
+                  <ProjectPreview project={project} />
+                )}
               </div>
+
+              <div className="pj-card-overlay">
+                <span className="pj-card-category">{project.category}</span>
+                <h3 className="pj-card-title">{project.title.trim()}</h3>
+                <span className="pj-card-hint">
+                  <SearchIcon />
+                  Klik untuk lihat detail &amp; deskripsi
+                </span>
+              </div>
+
+              {/* Tombol transparan menutupi seluruh kartu */}
+              <button
+                type="button"
+                className="pj-card-trigger"
+                aria-label={`Lihat detail project ${project.title.trim()}`}
+                onClick={() => setActiveProject(project)}
+              />
             </motion.article>
           ))}
         </div>
       </div>
+
+      <AnimatePresence>
+        {activeProject && (
+          <ProjectModal
+            key="project-modal"
+            project={activeProject}
+            onClose={() => setActiveProject(null)}
+          />
+        )}
+      </AnimatePresence>
     </section>
   );
 }
