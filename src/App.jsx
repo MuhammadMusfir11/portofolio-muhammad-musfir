@@ -22,7 +22,7 @@ const projects = [
     githubUrl: "https://github.com/MuhammadMusfir11/web-klinik-zahran.git",
     category: "Clinic Website",
     description:
-      "Website klinik yang membantu anda dalam melihat layanan klinik dan memudahkan dalam membuat janji dengan dokter, sehingga dapat membuat kemudahans.",
+      "Website klinik yang membantu anda dalam melihat layanan klinik dan memudahkan dalam membuat janji dengan dokter.",
     stack: ["React", "Tailwind CSS", "Vite"],
     style: "cosmic",
     label: "DESIGNED TO STAND OUT",
