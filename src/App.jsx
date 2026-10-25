@@ -17,8 +17,8 @@ const projects = [
   },
   {
     title: " Clinic Website",
-    image: "/ecommerce.png",
-    websiteUrl: "hhttps://web-klinik-zahran.netlify.app",
+    image: "/porto klinik.png",
+    websiteUrl: "https://web-klinik-zahran.netlify.app",
     githubUrl: "https://github.com/MuhammadMusfir11/web-klinik-zahran.git",
     category: "Clinic Website",
     description:
