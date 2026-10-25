@@ -581,22 +581,22 @@ function Projects() {
 
 function Skills() {
   const skills = [
-    { name: "HTML5", color: "#E34F26", icon: "https://cdn.simpleicons.org/html5/E34F26" },
-    { name: "CSS3", color: "#1572B6", icon: "https://cdn.simpleicons.org/css/1572B6" },
-    { name: "JavaScript", color: "#F7DF1E", icon: "https://cdn.simpleicons.org/javascript/F7DF1E" },
-    { name: "React", color: "#61DAFB", icon: "https://cdn.simpleicons.org/react/61DAFB" },
-    { name: "Tailwind CSS", color: "#06B6D4", icon: "https://cdn.simpleicons.org/tailwindcss/06B6D4" },
-    { name: "Git", color: "#F05032", icon: "https://cdn.simpleicons.org/git/F05032" },
-    { name: "Python", color: "#3776AB", icon: "https://cdn.simpleicons.org/python/3776AB" },
-    { name: "PHP", color: "#777BB4", icon: "https://cdn.simpleicons.org/php/777BB4" },
-    { name: "MySQL", color: "#4479A1", icon: "https://cdn.simpleicons.org/mysql/4479A1" },
-    { name: "Laravel", color: "#FF2D20", icon: "https://cdn.simpleicons.org/laravel/FF2D20" },
+    { name: "HTML5", icon: "https://cdn.simpleicons.org/html5/E34F26" },
+    { name: "CSS3", icon: "https://cdn.simpleicons.org/css/1572B6" },
+    { name: "JavaScript", icon: "https://cdn.simpleicons.org/javascript/F7DF1E" },
+    { name: "React", icon: "https://cdn.simpleicons.org/react/61DAFB" },
+    { name: "Tailwind CSS", icon: "https://cdn.simpleicons.org/tailwindcss/06B6D4" },
+    { name: "Git", icon: "https://cdn.simpleicons.org/git/F05032" },
+    { name: "Python", icon: "https://cdn.simpleicons.org/python/3776AB" },
+    { name: "PHP", icon: "https://cdn.simpleicons.org/php/777BB4" },
+    { name: "MySQL", icon: "https://cdn.simpleicons.org/mysql/4479A1" },
+    { name: "Laravel", icon: "https://cdn.simpleicons.org/laravel/FF2D20" },
   ];
 
   return (
     <section className="skills-section section-padding" id="skills">
-      <div className="container skills-grid">
-        <div>
+      <div className="container">
+        <div className="sk-heading">
           <SectionHeading
             eyebrow="TOOLS OF THE TRADE"
             title={
@@ -610,17 +610,33 @@ function Skills() {
           />
         </div>
 
-        <div className="toolkit-grid">
-          {skills.map((skill) => (
-            <div className="toolkit-card" key={skill.name}>
-              <img
-                src={skill.icon}
-                alt={`${skill.name} logo`}
-                className="toolkit-icon"
-              />
-              <span>{skill.name}</span>
+        <div className="sk-marquee-card">
+          <p className="sk-marquee-title">TECHNOLOGIES I WORK WITH</p>
+
+          <div className="sk-marquee" role="list" aria-label="Daftar teknologi">
+            <div className="sk-track">
+              {/* Daftar ditulis 2x supaya putarannya mulus tanpa jeda */}
+              {[0, 1].map((copy) => (
+                <div className="sk-set" key={copy} aria-hidden={copy === 1}>
+                  {skills.map((skill) => (
+                    <div
+                      className="sk-item"
+                      key={`${copy}-${skill.name}`}
+                      role={copy === 0 ? "listitem" : undefined}
+                      title={skill.name}
+                    >
+                      <img
+                        src={skill.icon}
+                        alt={copy === 0 ? skill.name : ""}
+                        loading="lazy"
+                        draggable="false"
+                      />
+                    </div>
+                  ))}
+                </div>
+              ))}
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
