@@ -7,7 +7,7 @@ const projects = [
     title: " E-Commerce Website",
     image: "/ecommerce.png",
     websiteUrl: "https://example-ecommerce-web.netlify.app",
-    githubUrl: "",
+    githubUrl: "https://github.com/MuhammadMusfir11/web-ecommerce.git",
     category: "E-Commerce Website",
     description:
       "Website e-commerce yang dapat membantu anda lebih mudah dalam berjualan.",
@@ -19,6 +19,7 @@ const projects = [
     title: " Clinic Website",
     image: "/ecommerce.png",
     websiteUrl: "hhttps://web-klinik-zahran.netlify.app",
+    githubUrl: "https://github.com/MuhammadMusfir11/web-klinik-zahran.git",
     category: "Clinic Website",
     description:
       "Website klinik yang membantu anda dalam melihat layanan klinik dan memudahkan dalam membuat janji dengan dokter.",
@@ -30,6 +31,7 @@ const projects = [
     title: "Al-Ahwan Profile",
     image: "/2.png",
     websiteUrl: "https://tahsin-al-ahwan.netlify.app",
+    githubUrl: "",
     category: "Company Profile",
     description:
       "Website informatif dengan pengalaman visual yang terinspirasi dari keindahan alam.",
@@ -41,6 +43,7 @@ const projects = [
     title: "Business Landing Page",
     image: "/porto kuliner.png",
     websiteUrl: "https://masakan-khas-indonesia.netlify.app",
+    githubUrl: "",
     category: "Web Design & Development",
     description:
       "Konsep landing page modern untuk membantu bisnis menampilkan layanan secara profesional.",
@@ -52,6 +55,7 @@ const projects = [
     title: "Personal Portfolio",
     image: "/1.png",
     websiteUrl: "https://portofolio-muhammad-musfir.netlify.app",
+    githubUrl: "https://github.com/MuhammadMusfir11/portofolio-muhammad-musfir.git",
     category: "Personal Project",
     description:
       "Website portofolio untuk menampilkan profil, kemampuan, dan karya pengembangan web.",
@@ -63,6 +67,7 @@ const projects = [
     title: " Wedding Invitation",
     image: "/portofolio 7.png",
     websiteUrl: "https://project-wedding-invitation.netlify.app",
+    githubUrl: "",
     category: "Personal Project",
     description:
       "Website undangan pernikahan yang interaktif dan memanjakan mata.",
