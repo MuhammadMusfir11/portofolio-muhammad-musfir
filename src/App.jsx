@@ -10,7 +10,7 @@ const projects = [
     githubUrl: "https://github.com/MuhammadMusfir11/web-ecommerce.git",
     category: "E-Commerce Website",
     description:
-      "Website e-commerce yang dapat membantu anda lebih mudah dalam berjualan.",
+      "Website e-commerce yang dapat membantu anda lebih mudah dalam berjualan dan dapat dikenal oleh lebih banyak orang.",
     stack: ["React", "Tailwind CSS", "Vite"],
     style: "cosmic",
     label: "DESIGNED TO STAND OUT",
@@ -34,7 +34,7 @@ const projects = [
     githubUrl: "",
     category: "Company Profile",
     description:
-      "Website informatif dengan pengalaman visual yang terinspirasi dari keindahan alam.",
+      "Website informatif yang berisi mengenai jasa dan kursus yang bertujuan untuk memudahkan murid atau siswa.",
     stack: ["HTML", "CSS", "JavaScript"],
     style: "forest",
     label: "NATURE / EXPLORE",
@@ -70,7 +70,7 @@ const projects = [
     githubUrl: "",
     category: "Personal Project",
     description:
-      "Website undangan pernikahan yang interaktif dan memanjakan mata.",
+      "Website undangan pernikahan yang interaktif, mudah dibuka dan memanjakan mata.",
     stack: ["HTML", "CSS", "JavaScript"],
     style: "cosmic",
     label: "DESIGNED TO STAND OUT",
