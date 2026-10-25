@@ -591,6 +591,7 @@ function Skills() {
     { name: "PHP", icon: "https://cdn.simpleicons.org/php/777BB4" },
     { name: "MySQL", icon: "https://cdn.simpleicons.org/mysql/4479A1" },
     { name: "Laravel", icon: "https://cdn.simpleicons.org/laravel/FF2D20" },
+    { name: "Node.js", icon: "https://cdn.simpleicons.org/nodedotjs/5FA04E" },
   ];
 
   return (
