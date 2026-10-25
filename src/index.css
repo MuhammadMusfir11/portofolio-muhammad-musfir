@@ -99,34 +99,26 @@ img {
   pointer-events: none;
 
   background:
-    conic-gradient(
-      from 25deg at 50% 50%,
+    conic-gradient(from 25deg at 50% 50%,
       transparent 0deg,
       rgba(35, 49, 68, 0.2) 35deg,
       rgba(55, 69, 84, 0.45) 75deg,
       transparent 125deg,
       rgba(31, 49, 72, 0.5) 185deg,
       rgba(48, 62, 78, 0.25) 235deg,
-      transparent 300deg
-    ),
-    radial-gradient(
-      ellipse at 25% 35%,
+      transparent 300deg),
+    radial-gradient(ellipse at 25% 35%,
       rgba(36, 54, 76, 0.7) 0%,
       rgba(23, 36, 54, 0.35) 32%,
-      transparent 58%
-    ),
-    radial-gradient(
-      ellipse at 78% 40%,
+      transparent 58%),
+    radial-gradient(ellipse at 78% 40%,
       rgba(49, 62, 78, 0.6) 0%,
       rgba(28, 41, 58, 0.3) 36%,
-      transparent 62%
-    ),
-    radial-gradient(
-      ellipse at 42% 78%,
+      transparent 62%),
+    radial-gradient(ellipse at 42% 78%,
       rgba(29, 46, 69, 0.75) 0%,
       rgba(18, 30, 48, 0.3) 40%,
-      transparent 68%
-    );
+      transparent 68%);
 
   background-size: 120% 120%, 145% 145%, 155% 155%, 140% 140%;
   background-repeat: no-repeat;
@@ -142,14 +134,17 @@ img {
     background-position: 0% 0%, 0% 10%, 100% 80%, 40% 100%;
     transform: translate3d(-4%, -3%, 0) rotate(-12deg) scale(0.9);
   }
+
   30% {
     background-position: 70% 30%, 70% 55%, 20% 20%, 90% 35%;
     transform: translate3d(3%, 2%, 0) rotate(8deg) scale(1.08);
   }
+
   65% {
     background-position: 100% 80%, 100% 100%, 75% 10%, 10% 60%;
     transform: translate3d(-2%, 5%, 0) rotate(20deg) scale(1.15);
   }
+
   100% {
     background-position: 20% 100%, 15% 30%, 0% 95%, 70% 0%;
     transform: translate3d(4%, -3%, 0) rotate(32deg) scale(0.98);
@@ -202,12 +197,15 @@ img {
     opacity: 0;
     transform: translate3d(0, -10vh, 0);
   }
+
   12% {
     opacity: 0.85;
   }
+
   75% {
     opacity: 0.65;
   }
+
   100% {
     opacity: 0;
     transform: translate3d(var(--star-drift), 110vh, 0);
@@ -226,13 +224,11 @@ img {
   width: 180px;
   height: 2px;
   border-radius: 50%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(140, 185, 255, 0.12) 35%,
-    rgba(190, 220, 255, 0.7) 78%,
-    #ffffff 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(140, 185, 255, 0.12) 35%,
+      rgba(190, 220, 255, 0.7) 78%,
+      #ffffff 100%);
   box-shadow:
     0 0 5px rgba(150, 195, 255, 0.6),
     0 0 12px rgba(100, 160, 255, 0.3);
@@ -262,18 +258,22 @@ img {
 }
 
 @keyframes cosmic-meteor-shoot {
+
   0%,
   62% {
     opacity: 0;
     transform: translate3d(0, 0, 0) rotate(135deg);
   }
+
   64% {
     opacity: 0.95;
   }
+
   72% {
     opacity: 0;
     transform: translate3d(-55vw, 45vh, 0) rotate(135deg);
   }
+
   100% {
     opacity: 0;
     transform: translate3d(-55vw, 45vh, 0) rotate(135deg);
@@ -336,14 +336,14 @@ main {
   gap: 28px;
 }
 
-.nav-links > a:not(.nav-cta) {
+.nav-links>a:not(.nav-cta) {
   color: #a5afc3;
   font-size: 15px;
   white-space: nowrap;
   transition: color 180ms ease;
 }
 
-.nav-links > a:not(.nav-cta):hover {
+.nav-links>a:not(.nav-cta):hover {
   color: white;
 }
 
@@ -460,7 +460,7 @@ main {
   line-height: 1.14;
 }
 
-.section-heading > p {
+.section-heading>p {
   max-width: 440px;
   margin: 17px 0 0;
   color: var(--muted);
@@ -498,6 +498,7 @@ main {
   from {
     opacity: 0.65;
   }
+
   to {
     opacity: 1;
   }
@@ -646,22 +647,18 @@ main {
   object-position: center bottom;
 
   /* Bagian bawah foto memudar menyatu dengan background */
-  -webkit-mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 62%,
-    rgba(0, 0, 0, 0.85) 74%,
-    rgba(0, 0, 0, 0.4) 88%,
-    transparent 100%
-  );
-  mask-image: linear-gradient(
-    to bottom,
-    #000 0%,
-    #000 62%,
-    rgba(0, 0, 0, 0.85) 74%,
-    rgba(0, 0, 0, 0.4) 88%,
-    transparent 100%
-  );
+  -webkit-mask-image: linear-gradient(to bottom,
+      #000 0%,
+      #000 62%,
+      rgba(0, 0, 0, 0.85) 74%,
+      rgba(0, 0, 0, 0.4) 88%,
+      transparent 100%);
+  mask-image: linear-gradient(to bottom,
+      #000 0%,
+      #000 62%,
+      rgba(0, 0, 0, 0.85) 74%,
+      rgba(0, 0, 0, 0.4) 88%,
+      transparent 100%);
 }
 
 .scroll-cue {
@@ -746,7 +743,7 @@ main {
   letter-spacing: -0.045em;
 }
 
-.about-profile-content > p {
+.about-profile-content>p {
   max-width: 700px;
   margin: 15px 0 0;
   color: #a0a6b3;
@@ -800,23 +797,17 @@ main {
   inset: -65%;
   pointer-events: none;
   background:
-    radial-gradient(
-      ellipse at 25% 35%,
+    radial-gradient(ellipse at 25% 35%,
       rgba(54, 84, 119, 0.7) 0%,
       rgba(38, 61, 91, 0.3) 25%,
-      transparent 48%
-    ),
-    radial-gradient(
-      ellipse at 75% 65%,
+      transparent 48%),
+    radial-gradient(ellipse at 75% 65%,
       rgba(76, 112, 151, 0.55) 0%,
       rgba(47, 75, 108, 0.25) 28%,
-      transparent 52%
-    ),
-    radial-gradient(
-      ellipse at 50% 45%,
+      transparent 52%),
+    radial-gradient(ellipse at 50% 45%,
       rgba(115, 153, 190, 0.25) 0%,
-      transparent 42%
-    );
+      transparent 42%);
   background-size: 150% 150%;
   filter: blur(24px);
   opacity: 0.9;
@@ -835,21 +826,19 @@ main {
   width: 65%;
   height: 260%;
   pointer-events: none;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(87, 125, 170, 0.05) 25%,
-    rgba(141, 175, 208, 0.24) 50%,
-    rgba(87, 125, 170, 0.13) 70%,
-    transparent 100%
-  );
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(87, 125, 170, 0.05) 25%,
+      rgba(141, 175, 208, 0.24) 50%,
+      rgba(87, 125, 170, 0.13) 70%,
+      transparent 100%);
   filter: blur(15px);
   transform: rotate(25deg);
   opacity: 0.9;
   animation: cosmic-light-sweep 4.5s ease-in-out infinite;
 }
 
-.about-info-card > * {
+.about-info-card>* {
   position: relative;
   z-index: 2;
 }
@@ -859,14 +848,17 @@ main {
     transform: translate(-12%, -8%) rotate(0deg) scale(0.9);
     background-position: 0% 0%;
   }
+
   35% {
     transform: translate(8%, 10%) rotate(12deg) scale(1.1);
     background-position: 70% 30%;
   }
+
   70% {
     transform: translate(-5%, 14%) rotate(-10deg) scale(1.2);
     background-position: 100% 80%;
   }
+
   100% {
     transform: translate(12%, -10%) rotate(16deg) scale(0.95);
     background-position: 20% 100%;
@@ -874,17 +866,21 @@ main {
 }
 
 @keyframes cosmic-light-sweep {
+
   0%,
   10% {
     left: -75%;
     opacity: 0;
   }
+
   25% {
     opacity: 0.9;
   }
+
   70% {
     opacity: 0.65;
   }
+
   100% {
     left: 125%;
     opacity: 0;
@@ -971,7 +967,7 @@ main {
   font-size: 10px;
 }
 
-.project-info > p {
+.project-info>p {
   min-height: 65px;
   margin: 14px 0;
   color: #97a4ba;
@@ -1005,6 +1001,38 @@ main {
   height: 15px;
   object-fit: contain;
   flex-shrink: 0;
+}
+
+.project-links {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.project-link {
+  flex: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border: 1px solid rgba(140, 174, 255, 0.22);
+  border-radius: 9px;
+  background: rgba(140, 174, 255, 0.035);
+  color: #a9ceff;
+  font-size: 13px;
+  font-weight: 500;
+  transition: background 250ms ease, border-color 250ms ease;
+}
+
+.project-link svg {
+  flex-shrink: 0;
+}
+
+.project-link:hover {
+  background: rgba(140, 174, 255, 0.09);
+  border-color: rgba(140, 174, 255, 0.5);
 }
 
 .project-website-link {
@@ -1083,7 +1111,7 @@ a.project-website-link:hover {
   border-bottom: 1px solid rgba(189, 212, 255, 0.13);
 }
 
-.preview-toolbar > span {
+.preview-toolbar>span {
   width: 4px;
   height: 4px;
   border-radius: 50%;
@@ -1397,7 +1425,7 @@ a.project-website-link:hover {
   line-height: 1.08;
 }
 
-.contact-inner > p {
+.contact-inner>p {
   max-width: 430px;
   margin: 20px 0 27px;
   color: #9ca9bf;
@@ -1461,7 +1489,7 @@ a.project-website-link:hover {
   gap: 20px;
 }
 
-.footer-inner > span,
+.footer-inner>span,
 .back-top {
   color: #74829b;
   font-size: 10px;
@@ -1567,7 +1595,7 @@ a.project-website-link:hover {
     display: flex;
   }
 
-  .nav-links > a:not(.nav-cta) {
+  .nav-links>a:not(.nav-cta) {
     display: flex;
     align-items: center;
     min-height: 48px;
@@ -1576,8 +1604,8 @@ a.project-website-link:hover {
     font-size: 15px;
   }
 
-  .nav-links > a:not(.nav-cta):hover,
-  .nav-links > a:not(.nav-cta):active {
+  .nav-links>a:not(.nav-cta):hover,
+  .nav-links>a:not(.nav-cta):active {
     background: rgba(112, 169, 255, 0.08);
   }
 
@@ -1621,7 +1649,7 @@ a.project-website-link:hover {
     text-align: center;
   }
 
-  .skills-section .section-heading > p {
+  .skills-section .section-heading>p {
     margin-inline: auto;
   }
 
@@ -1644,7 +1672,7 @@ a.project-website-link:hover {
     font-size: 11px;
   }
 
-  .section-heading > p {
+  .section-heading>p {
     font-size: 14px;
     line-height: 1.8;
   }
@@ -1763,7 +1791,7 @@ a.project-website-link:hover {
     font-size: 28px;
   }
 
-  .about-profile-content > p {
+  .about-profile-content>p {
     max-width: none;
     margin-top: 12px;
     font-size: 14px;
@@ -1807,7 +1835,7 @@ a.project-website-link:hover {
     overflow-wrap: anywhere;
   }
 
-  .project-info > p {
+  .project-info>p {
     min-height: 0;
     font-size: 14px;
     line-height: 1.7;
@@ -1848,15 +1876,47 @@ a.project-website-link:hover {
 /* ---------- HP kecil / portrait ---------- */
 @media (max-width: 600px) {
   .projects-grid {
-    grid-template-columns: minmax(0, 1fr);
-    gap: 18px;
+    gap: 12px;
   }
-
-  .project-card:last-child:nth-child(odd) {
-    grid-column: auto;
-    width: 100%;
+  .project-info {
+    padding: 12px;
   }
-
+  .project-category {
+    font-size: 11px;
+  }
+  .project-title-row h3 {
+    font-size: 14px;
+  }
+  .project-info>p {
+    margin: 10px 0;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+  .project-stack {
+    gap: 6px;
+    margin-top: 12px;
+  }
+  .project-tech {
+    gap: 5px;
+    padding: 5px 7px;
+    font-size: 10px;
+  }
+  .project-tech-icon {
+    width: 12px;
+    height: 12px;
+  }
+  /* Dua tombol ditumpuk supaya muat di kartu yang sempit */
+  .project-links {
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 14px;
+  }
+  .project-link {
+    min-height: 40px;
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+  
   .toolkit-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 10px;
@@ -1925,7 +1985,7 @@ a.project-website-link:hover {
     font-size: 2.25rem;
   }
 
-  .contact-inner > p {
+  .contact-inner>p {
     font-size: 14px;
   }
 
@@ -1936,6 +1996,7 @@ a.project-website-link:hover {
 }
 
 @media (max-width: 380px) {
+
   .container,
   .certificates-container {
     width: calc(100% - 24px);
