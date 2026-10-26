@@ -18,7 +18,7 @@ const projects = [
   {
     title: " Clinic Website",
     image: "/porto klinik.png",
-    websiteUrl: "hhttps://web-klinik-zahran.vercel.app/",
+    websiteUrl: "https://web-klinik-zahran.vercel.app/",
     githubUrl: "https://github.com/MuhammadMusfir11/web-klinik-zahran.git",
     category: "Clinic Website",
     description:
