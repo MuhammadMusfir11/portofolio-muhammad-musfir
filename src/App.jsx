@@ -30,8 +30,8 @@ const projects = [
   {
     title: "Al-Ahwan Profile",
     image: "/2.png",
-    websiteUrl: "https://tahsin-al-ahwan.netlify.app",
-    githubUrl: "",
+    websiteUrl: "https://web-kursus-xi.vercel.app/",
+    githubUrl: "https://github.com/MuhammadMusfir11/web-kursus.git",
     category: "Company Profile",
     description:
       "Website informatif yang berisi mengenai jasa dan kursus yang bertujuan untuk memudahkan murid atau siswa.",
@@ -42,8 +42,8 @@ const projects = [
   {
     title: "Business Landing Page",
     image: "/porto kuliner.png",
-    websiteUrl: "https://masakan-khas-indonesia.netlify.app",
-    githubUrl: "",
+    websiteUrl: "https://web-contoh-umkm-zahran.vercel.app/",
+    githubUrl: "https://github.com/MuhammadMusfir11/web-contoh-umkm-zahran.git",
     category: "Web Design & Development",
     description:
       "Konsep landing page modern untuk membantu bisnis menampilkan layanan secara profesional.",
@@ -54,8 +54,8 @@ const projects = [
   {
     title: " Wedding Invitation",
     image: "/portofolio 7.png",
-    websiteUrl: "https://project-wedding-invitation.netlify.app",
-    githubUrl: "",
+    websiteUrl: "https://card-invitation-rose.vercel.app/",
+    githubUrl: "https://github.com/MuhammadMusfir11/card-invitation.git",
     category: "Personal Project",
     description:
       "Website undangan pernikahan yang interaktif, mudah dibuka dan memanjakan mata.",
