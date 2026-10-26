@@ -11,7 +11,7 @@ const projects = [
     category: "E-Commerce Website",
     description:
       "Website e-commerce yang dapat membantu anda lebih mudah dalam berjualan dan dapat dikenal oleh lebih banyak orang.",
-    stack: ["React", "Tailwind CSS", "Vite"],
+    stack: ["React", "Tailwind CSS", "Vite","MySQL"],
     style: "cosmic",
     label: "DESIGNED TO STAND OUT",
   },
@@ -23,7 +23,7 @@ const projects = [
     category: "Clinic Website",
     description:
       "Website klinik yang membantu anda dalam melihat layanan klinik dan memudahkan dalam membuat janji dengan dokter.",
-    stack: ["React", "Tailwind CSS", "Vite"],
+    stack: ["React", "Tailwind CSS", "Vite", "MySQL"],
     style: "cosmic",
     label: "DESIGNED TO STAND OUT",
   },
@@ -72,6 +72,7 @@ const skills = [
   { name: "React", group: "FRAMEWORK" },
   { name: "Tailwind CSS", group: "STYLING" },
   { name: "Git", group: "TOOLS" },
+  { name: "MySQL", group: "DATABASE" },
 ];
 
 function ArrowIcon() {
@@ -469,6 +470,9 @@ const TECH_ICONS = {
   Motion: "https://cdn.simpleicons.org/framer/0055FF",
   Git: "https://cdn.simpleicons.org/git/F05032",
   Vite: "https://cdn.simpleicons.org/vite/646CFF",
+  MySQL: "https://cdn.simpleicons.org/mysql/4479A1",
+  Python: "https://cdn.simpleicons.org/python/3776AB",
+  Laravel: "https://cdn.simpleicons.org/laravel/FF2D20",
 };
 
 function SearchIcon() {
