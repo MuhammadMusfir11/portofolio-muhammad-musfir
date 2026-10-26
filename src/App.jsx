@@ -52,18 +52,6 @@ const projects = [
     label: "BUILD YOUR PRESENCE",
   },
   {
-    title: "Personal Portfolio",
-    image: "/1.png",
-    websiteUrl: "https://portofolio-muhammad-musfir.netlify.app",
-    githubUrl: "https://github.com/MuhammadMusfir11/portofolio-muhammad-musfir.git",
-    category: "Personal Project",
-    description:
-      "Website portofolio untuk menampilkan profil, kemampuan, dan karya pengembangan web.",
-    stack: ["React", "Tailwind CSS", "Vite"],
-    style: "cosmic",
-    label: "DESIGNED TO STAND OUT",
-  },
-  {
     title: " Wedding Invitation",
     image: "/portofolio 7.png",
     websiteUrl: "https://project-wedding-invitation.netlify.app",
