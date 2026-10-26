@@ -6,7 +6,7 @@ const projects = [
   {
     title: " E-Commerce Website",
     image: "/ecommerce.png",
-    websiteUrl: "https://example-ecommerce-web.netlify.app",
+    websiteUrl: "https://web-ecommerce-puce.vercel.app/",
     githubUrl: "https://github.com/MuhammadMusfir11/web-ecommerce.git",
     category: "E-Commerce Website",
     description:
@@ -18,7 +18,7 @@ const projects = [
   {
     title: " Clinic Website",
     image: "/porto klinik.png",
-    websiteUrl: "https://web-klinik-zahran.netlify.app",
+    websiteUrl: "hhttps://web-klinik-zahran.vercel.app/",
     githubUrl: "https://github.com/MuhammadMusfir11/web-klinik-zahran.git",
     category: "Clinic Website",
     description:
