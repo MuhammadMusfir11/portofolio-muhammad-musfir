@@ -541,14 +541,14 @@ main {
 .hero-description {
   max-width: 435px;
   margin: 0;
-  color: #a0abc0;
+  color: #00040a;
   font-size: 14px;
   line-height: 1.95;
   text-align: justify;
 }
 
 .hero-description strong {
-  color: #e5edfc;
+  color: #000205;
   font-weight: 650;
 }
 
@@ -565,7 +565,7 @@ main {
   align-items: center;
   gap: 12px;
   margin-top: 53px;
-  color: #69768e;
+  color: #000308;
   font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.13em;
@@ -574,7 +574,7 @@ main {
 .meta-line {
   width: 23px;
   height: 1px;
-  background: #3e5c88;
+  background: #000308;
 }
 
 .hero-visual {
@@ -2564,5 +2564,599 @@ a.pj-btn-primary:hover {
 
   .sk-set[aria-hidden="true"] {
     display: none;
+  }
+}
+
+
+/* =====================================================
+   TEMA LATAR — gradasi navy → biru + kotak-kotak + kabut putih
+   Hanya mengubah latar & warna dasar. Bagian lain tidak diubah.
+   Untuk kembali ke tema lama, hapus seluruh blok ini.
+   ===================================================== */
+
+:root {
+  --bg: #0a0f55;
+  --bg-soft: #0d1a6a;
+  --panel: #0e1a5c;
+  --line: rgba(140, 190, 255, 0.22);
+
+  --grid-size: 64px;
+  /* Warna garis kotak: biru muda transparan, jadi otomatis
+     menyatu dengan warna latar (lebih tegas di atas, lembut di bawah) */
+  --grid-line: rgba(135, 190, 255, 0.34);
+
+  /* Kekuatan kabut putih: 0 = tidak ada, 1 = normal, 1.3 = lebih tebal */
+  --mist-strength: 1;
+}
+
+body {
+  background: var(--bg);
+}
+
+.portfolio-app {
+  background: transparent;
+}
+
+/* Lapisan 1: gradasi warna, menempel di layar */
+.portfolio-app::before {
+  position: fixed;
+  inset: 0;
+  z-index: -3;
+  background: linear-gradient(to bottom,
+      #07084a 0%,
+      #0b1360 22%,
+      #1a3a7e 52%,
+      #2b64a2 78%,
+      #3b82b6 100%);
+  background-size: auto;
+  filter: none;
+  opacity: 1;
+  transform: none;
+  animation: none;
+  will-change: auto;
+}
+
+/* Lapisan 2: kotak-kotak bergerak dengan kecepatan sedang.
+   Digeser tepat 1 kotak lalu mengulang, jadi mulus tanpa patah. */
+.portfolio-app::after {
+  content: "";
+  position: fixed;
+  inset: calc(var(--grid-size) * -1);
+  z-index: -2;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-line) 1.5px, transparent 1.5px),
+    linear-gradient(to bottom, var(--grid-line) 1.5px, transparent 1.5px);
+  background-size: var(--grid-size) var(--grid-size);
+  animation: grid-drift 2s linear infinite;
+  will-change: transform;
+}
+
+@keyframes grid-drift {
+  from { transform: translate3d(0, 0, 0); }
+  to   { transform: translate3d(var(--grid-size), var(--grid-size), 0); }
+}
+
+/* Nebula, bintang jatuh & meteor dihilangkan (cukup lewat CSS,
+   tidak perlu mengubah App.jsx) */
+.cosmic-background .cosmic-background,
+.cosmic-star,
+.cosmic-meteors,
+.cosmic-meteor {
+  display: none;
+}
+
+/* Lapisan 3: kabut putih yang melayang pelan.
+   Dua lapis kabut bergerak berlawanan arah supaya terlihat hidup. */
+/* Memakai elemen .cosmic-background yang sudah ada di App.jsx sebagai wadah kabut */
+.portfolio-app > .cosmic-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+  background: none;
+  opacity: var(--mist-strength);
+}
+
+.portfolio-app > .cosmic-background::before,
+.portfolio-app > .cosmic-background::after {
+  content: "";
+  position: absolute;
+  inset: -30%;
+  will-change: transform;
+}
+
+.portfolio-app > .cosmic-background::before {
+  background:
+    radial-gradient(ellipse 38% 26% at 18% 22%, rgba(255, 255, 255, 0.3), transparent 70%),
+    radial-gradient(ellipse 42% 28% at 72% 15%, rgba(255, 255, 255, 0.24), transparent 70%),
+    radial-gradient(ellipse 36% 30% at 48% 55%, rgba(255, 255, 255, 0.26), transparent 70%),
+    radial-gradient(ellipse 40% 26% at 85% 70%, rgba(255, 255, 255, 0.28), transparent 70%),
+    radial-gradient(ellipse 34% 24% at 22% 85%, rgba(255, 255, 255, 0.24), transparent 70%);
+  animation: mist-drift-a 36s ease-in-out infinite alternate;
+}
+
+.portfolio-app > .cosmic-background::after {
+  background:
+    radial-gradient(ellipse 40% 28% at 60% 28%, rgba(255, 255, 255, 0.26), transparent 70%),
+    radial-gradient(ellipse 36% 26% at 10% 55%, rgba(255, 255, 255, 0.24), transparent 70%),
+    radial-gradient(ellipse 42% 30% at 38% 82%, rgba(255, 255, 255, 0.28), transparent 70%),
+    radial-gradient(ellipse 34% 24% at 92% 42%, rgba(255, 255, 255, 0.22), transparent 70%);
+  animation: mist-drift-b 48s ease-in-out infinite alternate;
+}
+
+@keyframes mist-drift-a {
+  from { transform: translate3d(-7%, -3%, 0) scale(1); }
+  to   { transform: translate3d(7%, 4%, 0) scale(1.08); }
+}
+
+@keyframes mist-drift-b {
+  from { transform: translate3d(8%, 3%, 0) scale(1.05); }
+  to   { transform: translate3d(-8%, -4%, 0) scale(1); }
+}
+
+@media (max-width: 768px) {
+  :root {
+    --grid-size: 48px;
+    --grid-line: rgba(135, 190, 255, 0.3);
+  }
+
+  .portfolio-app::before {
+    inset: 0;
+    filter: none;
+    animation: none;
+  }
+
+  .portfolio-app::after {
+    animation-duration: 2s;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .portfolio-app::after,
+  .portfolio-app > .cosmic-background::before,
+  .portfolio-app > .cosmic-background::after {
+    animation: none !important;
+  }
+}
+
+
+/* =====================================================
+   WARNA KARTU — biru senada dengan latar
+   Kartu transparan sebagian, jadi warnanya ikut menyatu dengan
+   gradasi latar, tapi tetap lebih pekat supaya teks terbaca.
+   Di dalam kartu hanya ada animasi gradasi warna (tanpa kotak).
+   ===================================================== */
+
+:root {
+  --card-bg:
+    radial-gradient(circle at 18% 22%, rgba(210, 228, 255, 0.8) 1px, transparent 2px),
+    radial-gradient(circle at 75% 35%, rgba(180, 210, 255, 0.7) 1px, transparent 2px),
+    radial-gradient(circle at 60% 82%, rgba(210, 228, 255, 0.65) 1px, transparent 2px),
+    linear-gradient(150deg,
+      rgba(34, 78, 190, 0.5) 0%,
+      rgba(16, 38, 120, 0.68) 55%,
+      rgba(9, 22, 84, 0.8) 100%);
+  --card-border: rgba(150, 200, 255, 0.3);
+}
+
+.about-card,
+.about-info-card,
+.about-profile-card,
+.certificate-card,
+.sk-marquee-card {
+  border-color: var(--card-border);
+  background: var(--card-bg);
+}
+
+.about-card:hover {
+  border-color: rgba(180, 215, 255, 0.55);
+  box-shadow: 0 0 28px rgba(80, 150, 255, 0.18);
+}
+
+.certificate-card:hover {
+  border-color: rgba(180, 215, 255, 0.6);
+}
+
+.pj-card {
+  border-color: var(--card-border);
+  background: #0c1a6a;
+}
+
+.social-link-card {
+  border-color: var(--card-border);
+  background: linear-gradient(145deg, rgba(34, 78, 190, 0.5), rgba(10, 24, 90, 0.7));
+}
+
+.social-link-card:hover {
+  background: rgba(50, 105, 220, 0.6);
+}
+
+.site-footer {
+  border-top: 1px solid var(--card-border);
+  background: rgba(8, 18, 82, 0.6);
+}
+
+.muted-heading {
+  color: #9db8e8;
+}
+
+.certificate-image-wrap {
+  border-color: rgba(160, 200, 255, 0.16);
+  background: rgba(4, 10, 56, 0.45);
+}
+
+/* Nebula kartu About: diganti warna biru-cyan-indigo */
+.about-info-card::before {
+  background:
+    radial-gradient(ellipse at 25% 35%,
+      rgba(70, 150, 255, 0.6) 0%,
+      rgba(50, 100, 220, 0.28) 25%,
+      transparent 48%),
+    radial-gradient(ellipse at 75% 65%,
+      rgba(50, 200, 255, 0.4) 0%,
+      rgba(60, 130, 230, 0.2) 28%,
+      transparent 52%),
+    radial-gradient(ellipse at 50% 45%,
+      rgba(130, 120, 255, 0.24) 0%,
+      transparent 42%);
+  background-size: 150% 150%;
+}
+
+.about-info-card::after {
+  background: linear-gradient(90deg,
+      transparent 0%,
+      rgba(110, 170, 255, 0.06) 25%,
+      rgba(170, 215, 255, 0.26) 50%,
+      rgba(110, 170, 255, 0.14) 70%,
+      transparent 100%);
+}
+
+/* ---------- Animasi gradasi warna di dalam kartu ---------- */
+
+.about-profile-card,
+.sk-marquee-card,
+.certificate-card,
+.pj-card {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+
+.about-profile-card::before,
+.sk-marquee-card::before,
+.certificate-card::before,
+.pj-card::before {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 50% 45% at 25% 35%, rgba(70, 150, 255, 0.4), transparent 70%),
+    radial-gradient(ellipse 45% 40% at 80% 70%, rgba(40, 210, 255, 0.26), transparent 70%);
+  animation: card-glow-a 14s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+.about-profile-card::after,
+.sk-marquee-card::after,
+.certificate-card::after,
+.pj-card::after {
+  content: "";
+  position: absolute;
+  inset: -35%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 48% 42% at 70% 25%, rgba(120, 110, 255, 0.3), transparent 70%),
+    radial-gradient(ellipse 44% 40% at 20% 80%, rgba(80, 170, 255, 0.3), transparent 70%);
+  animation: card-glow-b 19s ease-in-out infinite alternate;
+  will-change: transform;
+}
+
+@keyframes card-glow-a {
+  from { transform: translate3d(-9%, -6%, 0) scale(1); }
+  to   { transform: translate3d(9%, 7%, 0) scale(1.15); }
+}
+
+@keyframes card-glow-b {
+  from { transform: translate3d(8%, 6%, 0) scale(1.1); }
+  to   { transform: translate3d(-9%, -7%, 0) scale(1); }
+}
+
+/* Kartu projek: gradasi di atas foto, dibuat tipis supaya foto tetap jelas */
+.pj-card::before,
+.pj-card::after {
+  z-index: 1;
+  opacity: 0.45;
+}
+
+.pj-card-media { z-index: 0; }
+.pj-card-overlay { z-index: 2; }
+.pj-card-trigger { z-index: 3; }
+
+@media (prefers-reduced-motion: reduce) {
+  .about-profile-card::before,
+  .about-profile-card::after,
+  .sk-marquee-card::before,
+  .sk-marquee-card::after,
+  .certificate-card::before,
+  .certificate-card::after,
+  .pj-card::before,
+  .pj-card::after {
+    animation: none !important;
+  }
+}
+
+
+/* =====================================================
+   NAVBAR PIL — melayang di atas, mengecil saat di-scroll,
+   penanda menu aktif ikut bergeser ke bagian yang sedang dilihat
+   ===================================================== */
+
+.site-header {
+  position: fixed;
+  top: 14px;
+  left: 50%;
+  z-index: 100;
+  width: min(1100px, calc(100% - 32px));
+  transform: translateX(-50%);
+  border: 1px solid rgba(165, 210, 255, 0.3);
+  border-radius: 999px;
+  background: rgba(10, 24, 96, 0.55);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  box-shadow:
+    0 10px 34px rgba(3, 8, 50, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  transition:
+    width 0.5s cubic-bezier(0.4, 0, 0.2, 1),
+    top 0.35s ease,
+    background 0.35s ease,
+    box-shadow 0.35s ease;
+}
+
+.site-header.is-scrolled {
+  top: 10px;
+  width: min(640px, calc(100% - 32px));
+  background: rgba(8, 20, 86, 0.78);
+  box-shadow:
+    0 8px 26px rgba(3, 8, 50, 0.45),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  min-height: 64px;
+  padding: 0 10px 0 28px;
+  transition: min-height 0.35s ease, padding 0.35s ease, gap 0.35s ease;
+}
+
+.site-header.is-scrolled .navbar {
+  justify-content: center;
+  gap: 0;
+  min-height: 50px;
+  padding: 0 8px;
+}
+
+/* Nama mengecil sampai hilang saat di-scroll */
+.brand {
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 360px;
+  overflow: hidden;
+  font-size: 12px;
+  letter-spacing: 0.14em;
+  line-height: 1.4;
+  white-space: nowrap;
+  transition: max-width 0.45s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
+}
+
+.site-header.is-scrolled .brand {
+  max-width: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-links {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+
+.nav-links > a:not(.nav-cta) {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  min-height: 0;
+  padding: 10px 16px;
+  border-radius: 999px;
+  background: transparent;
+  color: #c4d6f5;
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: color 0.25s ease;
+}
+
+.nav-links > a:not(.nav-cta):hover,
+.nav-links > a:not(.nav-cta):active {
+  background: transparent;
+  color: #ffffff;
+}
+
+.nav-links > a.is-active:not(.nav-cta) {
+  color: #ffffff;
+}
+
+/* Pil penanda yang meluncur ke menu aktif */
+.nav-indicator {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  height: 38px;
+  margin-top: -19px;
+  border: 1px solid rgba(180, 215, 255, 0.5);
+  border-radius: 999px;
+  background: linear-gradient(135deg, rgba(110, 175, 255, 0.5), rgba(70, 120, 255, 0.38));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.22);
+  pointer-events: none;
+  will-change: transform, width;
+  transition:
+    transform 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    width 0.45s cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 0.25s ease;
+}
+
+.nav-cta {
+  flex-shrink: 0;
+  margin-left: 8px;
+  padding: 11px 18px;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #4b91ff, #3a6df0);
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 600;
+  transition: margin 0.35s ease, padding 0.35s ease, max-width 0.4s ease, opacity 0.25s ease;
+}
+
+.nav-cta:hover {
+  border: 0;
+  background: linear-gradient(135deg, #5fa0ff, #4a7cff);
+}
+
+/* Tombol "Let's talk" juga menghilang saat navbar mengecil */
+.site-header.is-scrolled .nav-cta {
+  max-width: 0;
+  margin-left: 0;
+  padding-inline: 0;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-cta {
+  max-width: 200px;
+}
+
+/* Isi halaman tidak boleh tertutup navbar yang melayang */
+.hero {
+  padding-block: 150px 95px;
+}
+
+/* ---------- Tablet & HP: tetap pil, menu bisa digeser ---------- */
+@media (max-width: 1023px) {
+  .site-header {
+    position: fixed;
+    top: 10px;
+    width: fit-content;
+    max-width: calc(100% - 20px);
+    border: 1px solid rgba(165, 210, 255, 0.3);
+    background: rgba(10, 24, 96, 0.6);
+  }
+
+  .site-header.is-scrolled {
+    top: 8px;
+    width: fit-content;
+    background: rgba(8, 20, 86, 0.8);
+  }
+
+  .navbar {
+    min-height: 54px;
+    gap: 0;
+    padding: 0 6px;
+  }
+
+  .site-header.is-scrolled .navbar {
+    min-height: 46px;
+    padding: 0 5px;
+  }
+
+  .brand,
+  .nav-cta,
+  .menu-toggle {
+    display: none;
+  }
+
+  .nav-links {
+    position: relative;
+    top: auto;
+    left: auto;
+    right: auto;
+    z-index: auto;
+    overflow-x: auto;
+    scrollbar-width: none;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 2px;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    box-shadow: none;
+  }
+
+  .nav-links > a:not(.nav-cta) {
+    min-height: 0;
+    padding: 10px 14px;
+    border-radius: 999px;
+    font-size: 13.5px;
+  }
+
+  .nav-links::-webkit-scrollbar {
+    display: none;
+  }
+
+  .nav-indicator {
+    height: 36px;
+    margin-top: -18px;
+  }
+
+  .site-header.is-scrolled .nav-links > a:not(.nav-cta) {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+
+  .site-header.is-scrolled .nav-indicator {
+    height: 32px;
+    margin-top: -16px;
+  }
+
+  .hero {
+    padding-block: 104px 56px;
+  }
+}
+
+@media (max-width: 420px) {
+  .nav-links > a:not(.nav-cta) {
+    padding: 9px 11px;
+    font-size: 12.5px;
+  }
+
+  .site-header.is-scrolled .nav-links > a:not(.nav-cta) {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .site-header,
+  .navbar,
+  .brand,
+  .nav-indicator {
+    transition-duration: 0.01ms !important;
   }
 }

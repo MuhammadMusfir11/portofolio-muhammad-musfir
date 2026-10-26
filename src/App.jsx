@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -127,46 +127,155 @@ function GitHubIcon() {
   );
 }
 
-function Navbar() {
-  const [menuOpen, setMenuOpen] = useState(false);
+const NAV_LINKS = [
+  ["About", "#about"],
+  ["Projects", "#projects"],
+  ["Skills", "#skills"],
+  ["Achievements", "#certificates"],
+  ["Contact", "#contact"],
+];
 
-  const links = [
-    ["About", "#about"],
-    ["Projects", "#projects"],
-    ["Skills", "#skills"],
-    ["Achviements", "#certificates"],
-    ["Contact", "#contact"],
-  ];
+function Navbar() {
+  const [active, setActive] = useState("");
+  const [scrolled, setScrolled] = useState(false);
+  const [indicator, setIndicator] = useState({
+    x: 0,
+    w: 0,
+    visible: false,
+    instant: false,
+  });
+  const linksRef = useRef(null);
+  const itemRefs = useRef({});
+
+  // Scroll-spy: cari bagian halaman yang sedang dilihat + deteksi sudah di-scroll
+  useEffect(() => {
+    const ids = NAV_LINKS.map(([, href]) => href.slice(1));
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
+      setScrolled(window.scrollY > 40);
+
+      const line = window.innerHeight * 0.35;
+      let current = "";
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= line) current = id;
+      }
+
+      const atBottom =
+        window.innerHeight + window.scrollY >=
+        document.documentElement.scrollHeight - 4;
+      if (atBottom) current = ids[ids.length - 1];
+
+      setActive(current);
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    };
+
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+    };
+  }, []);
+
+  // Posisi "pil" penanda menu yang aktif
+  const measure = useCallback(() => {
+    const el = itemRefs.current[active];
+    const box = linksRef.current;
+
+    if (!el || !box) {
+      setIndicator((p) => (p.visible ? { ...p, visible: false } : p));
+      return;
+    }
+
+    setIndicator((p) => ({
+      x: el.offsetLeft,
+      w: el.offsetWidth,
+      visible: true,
+      instant: !p.visible,
+    }));
+
+    // Di HP menu bisa digeser: bawa menu aktif ke tengah
+    if (box.scrollWidth > box.clientWidth + 2) {
+      box.scrollTo({
+        left: el.offsetLeft - (box.clientWidth - el.offsetWidth) / 2,
+        behavior: "smooth",
+      });
+    }
+  }, [active]);
+
+  useEffect(() => {
+    measure();
+  }, [measure, scrolled]);
+
+  useEffect(() => {
+    if (indicator.instant) {
+      const id = requestAnimationFrame(() =>
+        setIndicator((p) => ({ ...p, instant: false }))
+      );
+      return () => cancelAnimationFrame(id);
+    }
+  }, [indicator.instant]);
+
+  // Ukur ulang saat ukuran navbar berubah (misal waktu mengecil)
+  useEffect(() => {
+    const box = linksRef.current;
+    if (!box || typeof ResizeObserver === "undefined") return;
+    const ro = new ResizeObserver(() => measure());
+    ro.observe(box);
+    Object.values(itemRefs.current).forEach((el) => el && ro.observe(el));
+    return () => ro.disconnect();
+  }, [measure]);
 
   return (
-    <header className="site-header">
-      <nav className="navbar container" aria-label="Main navigation">
-        <a className="brand" href="#home" aria-label="Zahran home">
-          <span>MUHAMMAD MUSFIR AZZAHRANI ZEIN<span className="brand-dot"></span></span>
+    <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
+      <nav className="navbar" aria-label="Main navigation">
+        <a className="brand" href="#home" aria-label="Home">
+          <span>
+            MUHAMMAD MUSFIR AZZAHRANI ZEIN
+            <span className="brand-dot"></span>
+          </span>
         </a>
 
-        <button
-          className="menu-toggle"
-          type="button"
-          aria-label={menuOpen ? "Close navigation" : "Open navigation"}
-          aria-expanded={menuOpen}
-          onClick={() => setMenuOpen(!menuOpen)}
-        >
-          <span />
-          <span />
-        </button>
+        <div className="nav-links" ref={linksRef}>
+          <span
+            className="nav-indicator"
+            aria-hidden="true"
+            style={{
+              width: indicator.w,
+              transform: `translateX(${indicator.x}px)`,
+              opacity: indicator.visible ? 1 : 0,
+              transition: indicator.instant ? "none" : undefined,
+            }}
+          />
 
-        <div className={`nav-links ${menuOpen ? "nav-open" : ""}`}>
-          {links.map(([label, href]) => (
-            <a key={href} href={href} onClick={() => setMenuOpen(false)}>
-              {label}
-            </a>
-          ))}
-          <a
-            className="nav-cta"
-            href="#contact"
-            onClick={() => setMenuOpen(false)}
-          >
+          {NAV_LINKS.map(([label, href]) => {
+            const id = href.slice(1);
+            return (
+              <a
+                key={href}
+                href={href}
+                ref={(el) => {
+                  itemRefs.current[id] = el;
+                }}
+                className={active === id ? "is-active" : ""}
+                aria-current={active === id ? "true" : undefined}
+              >
+                {label}
+              </a>
+            );
+          })}
+
+          <a className="nav-cta" href="#contact">
             Let's talk <ArrowIcon />
           </a>
         </div>
