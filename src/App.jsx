@@ -27,12 +27,24 @@ const projects = [
     style: "cosmic",
     label: "DESIGNED TO STAND OUT",
   },
+    {
+    title: "Services Website",
+    image: "/porto jasa.png",
+    websiteUrl: "https://web-jasa-elektronik.vercel.app",
+    githubUrl: "https://github.com/MuhammadMusfir11/web-jasa-elektronik.git",
+    category: "Services Website",
+    description:
+      "Website yang akan membantu anda dalam memanage layanan jasa yang ditawarkan dan pemasukan keuangan dari jasa.",
+    stack: ["React", "Tailwind CSS", "Vite", "MySQL"],
+    style: "cosmic",
+    label: "DESIGNED TO STAND OUT",
+  },
   {
-    title: "Al-Ahwan Profile",
+    title: "Company Profile",
     image: "/2.png",
     websiteUrl: "https://web-kursus-xi.vercel.app/",
     githubUrl: "https://github.com/MuhammadMusfir11/web-kursus.git",
-    category: "Company Profile",
+    category: "Landing Page",
     description:
       "Website informatif yang berisi mengenai jasa dan kursus yang bertujuan untuk memudahkan murid atau siswa.",
     stack: ["HTML", "CSS", "JavaScript"],
