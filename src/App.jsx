@@ -11,7 +11,7 @@ const projects = [
     category: "E-Commerce Website",
     description:
       "Website e-commerce yang dapat membantu anda lebih mudah dalam berjualan dan dapat dikenal oleh lebih banyak orang.",
-    stack: ["React", "Tailwind CSS", "Vite","MySQL"],
+    stack: ["React", "Tailwind CSS", "Vite", "MySQL"],
     style: "cosmic",
     label: "DESIGNED TO STAND OUT",
   },
@@ -27,7 +27,7 @@ const projects = [
     style: "cosmic",
     label: "DESIGNED TO STAND OUT",
   },
-    {
+  {
     title: "Services Website",
     image: "/porto jasa.png",
     websiteUrl: "https://web-jasa-elektronik.vercel.app",
@@ -35,6 +35,18 @@ const projects = [
     category: "Services Website",
     description:
       "Website yang akan membantu anda dalam memanage layanan jasa yang ditawarkan dan pemasukan keuangan dari jasa.",
+    stack: ["React", "Tailwind CSS", "Vite", "MySQL"],
+    style: "cosmic",
+    label: "DESIGNED TO STAND OUT",
+  },
+  {
+    title: "Task Group Website",
+    image: "/porto pariwisata.png",
+    websiteUrl: "https://destinasi-sos-pariwisata.vercel.app",
+    githubUrl: "https://github.com/MuhammadMusfir11/tugas-destinasi.git",
+    category: "Tasks Website",
+    description:
+      "Website yang akan membantu anda dalam membuat tugas dan mempermudah dalam presentasi.",
     stack: ["React", "Tailwind CSS", "Vite", "MySQL"],
     style: "cosmic",
     label: "DESIGNED TO STAND OUT",
