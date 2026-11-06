@@ -75,18 +75,6 @@ const projects = [
     style: "business",
     label: "BUILD YOUR PRESENCE",
   },
-  {
-    title: " Wedding Invitation",
-    image: "/portofolio 7.png",
-    websiteUrl: "https://card-invitation-rose.vercel.app/",
-    githubUrl: "https://github.com/MuhammadMusfir11/card-invitation.git",
-    category: "Personal Project",
-    description:
-      "Website undangan pernikahan yang interaktif, mudah dibuka dan memanjakan mata.",
-    stack: ["HTML", "CSS", "JavaScript"],
-    style: "cosmic",
-    label: "DESIGNED TO STAND OUT",
-  },
 ];
 
 const skills = [
@@ -618,6 +606,410 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
+/* =====================================================
+   WEDDING INVITATION — carousel 3D melingkar
+   Ganti isi daftar di bawah dengan undangan buatan Anda.
+   Gambar taruh di folder public/undangan/
+   ===================================================== */
+
+const weddingInvitations = [
+  {
+    title: "Undangan Klasik Elegan",
+    image: "/portofolio 7.png",
+    websiteUrl: "https://card-invitation-rose.vercel.app/",
+    description:
+      "Website undangan pernikahan yang interaktif, mudah dibuka dan memanjakan mata.",
+  },
+  {
+    title: "Undangan Rustic Garden",
+    image: "/undangan/undangan-2.png",
+    websiteUrl: "",
+    description:
+      "Undangan bertema taman dengan sentuhan floral yang hangat, lengkap dengan peta lokasi dan RSVP.",
+  },
+  {
+    title: "Undangan Modern Minimalis",
+    image: "/undangan/undangan-3.png",
+    websiteUrl: "",
+    description:
+      "Tampilan bersih dan modern dengan tipografi tegas, cocok untuk pasangan yang menyukai gaya simpel.",
+  },
+  {
+    title: "Undangan Adat Tradisional",
+    image: "/undangan/undangan-4.png",
+    websiteUrl: "",
+    description:
+      "Undangan dengan ornamen adat yang kental, dilengkapi musik latar dan susunan acara.",
+  },
+  {
+    title: "Undangan Royal Gold",
+    image: "/undangan/undangan-5.png",
+    websiteUrl: "",
+    description:
+      "Nuansa mewah dengan aksen emas dan transisi halus untuk kesan acara yang megah.",
+  },
+  {
+    title: "Undangan Pastel Floral",
+    image: "/undangan/undangan-6.png",
+    websiteUrl: "",
+    description:
+      "Warna pastel lembut dengan ilustrasi bunga, ringan dibuka di HP dan nyaman dibaca.",
+  },
+];
+
+function getWeddingCardSize() {
+  if (typeof window === "undefined") return 220;
+  const w = window.innerWidth;
+  if (w < 480) return 142;
+  if (w < 768) return 176;
+  return 220;
+}
+
+function ChevronIcon({ direction = "left" }) {
+  return (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d={direction === "left" ? "m15 5-7 7 7 7" : "m9 5 7 7-7 7"}
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function WeddingModal({ item, onClose }) {
+  return createPortal(
+    <motion.div
+      className="pj-backdrop wc-backdrop"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      transition={{ duration: 0.2 }}
+      onClick={onClose}
+    >
+      <motion.div
+        className="wc-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="wc-modal-title"
+        style={{ transformPerspective: 1100 }}
+        initial={{ opacity: 0, scale: 0.55, rotateY: -28, y: 30 }}
+        animate={{ opacity: 1, scale: 1, rotateY: 0, y: 0 }}
+        exit={{ opacity: 0, scale: 0.7, rotateY: 20, y: 20 }}
+        transition={{ type: "spring", stiffness: 260, damping: 24 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <button
+          type="button"
+          className="pj-close"
+          aria-label="Tutup detail undangan"
+          onClick={onClose}
+          autoFocus
+        >
+          <CloseIcon />
+        </button>
+
+        <div className="wc-modal-media">
+          <img src={item.image} alt={`Tampilan ${item.title}`} />
+        </div>
+
+        <div className="wc-modal-body">
+          <span className="pj-modal-category">Wedding Invitation</span>
+          <h3 id="wc-modal-title">{item.title}</h3>
+          <p className="pj-modal-desc">{item.description}</p>
+
+          {item.websiteUrl ? (
+            <a
+              className="pj-btn pj-btn-primary"
+              href={item.websiteUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <GlobeIcon />
+              <span>Buka Undangan</span>
+            </a>
+          ) : (
+            <span className="pj-btn pj-btn-disabled">
+              <GlobeIcon />
+              <span>Link belum tersedia</span>
+            </span>
+          )}
+        </div>
+      </motion.div>
+    </motion.div>,
+    document.body
+  );
+}
+
+function WeddingCarousel() {
+  const count = weddingInvitations.length;
+  const step = 360 / count;
+
+  const [cardW, setCardW] = useState(getWeddingCardSize);
+  const [activeItem, setActiveItem] = useState(null);
+
+  const stageRef = useRef(null);
+  const ringRef = useRef(null);
+  const cardRefs = useRef([]);
+
+  // Semua state animasi disimpan di ref supaya tidak re-render tiap frame
+  const motionState = useRef({
+    angle: 0, // sudut putar cincin (derajat)
+    vel: 0, // kecepatan saat ini (derajat/detik)
+    target: null, // sudut tujuan saat pakai tombol panah / fokus keyboard
+    dragging: false,
+    hover: false,
+    paused: false,
+    visible: true,
+    moved: 0, // jarak geser, untuk membedakan klik vs drag
+  });
+
+  const cardH = Math.round(cardW * 1.4);
+  const radius =
+    Math.round(cardW / 2 / Math.tan(Math.PI / Math.max(count, 4))) +
+    (cardW < 200 ? 44 : 72);
+
+  // Ukuran kartu menyesuaikan lebar layar
+  useEffect(() => {
+    const onResize = () => setCardW(getWeddingCardSize());
+    window.addEventListener("resize", onResize);
+    return () => window.removeEventListener("resize", onResize);
+  }, []);
+
+  // Animasi hanya jalan saat carousel terlihat di layar (hemat baterai)
+  useEffect(() => {
+    const el = stageRef.current;
+    if (!el || !("IntersectionObserver" in window)) return;
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        motionState.current.visible = entry.isIntersecting;
+      },
+      { threshold: 0 }
+    );
+    io.observe(el);
+    return () => io.disconnect();
+  }, []);
+
+  // Popup terbuka: carousel berhenti, Esc menutup, scroll halaman dikunci
+  useEffect(() => {
+    motionState.current.paused = activeItem !== null;
+    if (!activeItem) return;
+
+    const onKeyDown = (e) => {
+      if (e.key === "Escape") setActiveItem(null);
+    };
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.addEventListener("keydown", onKeyDown);
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [activeItem]);
+
+  // Loop animasi: putar otomatis kanan -> kiri + efek kedalaman 3D
+  useEffect(() => {
+    const s = motionState.current;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const AUTO_SPEED = reduceMotion ? 0 : -7; // minus = bergerak ke kiri
+    let raf;
+    let last = performance.now();
+
+    const render = () => {
+      if (ringRef.current) {
+        ringRef.current.style.transform = `translateZ(${-radius}px) rotateY(${s.angle}deg)`;
+      }
+      cardRefs.current.forEach((el, i) => {
+        if (!el) return;
+        let phi = (i * step + s.angle) % 360;
+        if (phi > 180) phi -= 360;
+        if (phi < -180) phi += 360;
+        const facing = Math.cos((phi * Math.PI) / 180);
+        // Kartu di depan terang, kartu di samping meredup, yang membelakangi hilang
+        el.style.opacity = facing > 0 ? String(0.3 + 0.7 * facing) : "0";
+        el.style.pointerEvents = facing > 0.2 ? "auto" : "none";
+      });
+    };
+
+    const tick = (now) => {
+      const dt = Math.min(0.05, (now - last) / 1000);
+      last = now;
+
+      if (s.visible) {
+        if (!s.dragging) {
+          if (s.target !== null) {
+            const diff = s.target - s.angle;
+            if (Math.abs(diff) < 0.05) {
+              s.angle = s.target;
+              s.target = null;
+            } else {
+              s.angle += diff * Math.min(1, dt * 6);
+            }
+            s.vel = 0;
+          } else {
+            const goal = s.hover || s.paused ? 0 : AUTO_SPEED;
+            s.vel += (goal - s.vel) * Math.min(1, dt * 3);
+            s.angle += s.vel * dt;
+          }
+        }
+        render();
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    raf = requestAnimationFrame(tick);
+    return () => cancelAnimationFrame(raf);
+  }, [radius, step]);
+
+  // Geser dengan mouse / jari untuk memutar manual (ada efek meluncur)
+  const handlePointerDown = (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    const s = motionState.current;
+    s.dragging = true;
+    s.target = null;
+    s.moved = 0;
+    s.vel = 0;
+    stageRef.current?.classList.add("is-dragging");
+
+    let lastX = e.clientX;
+    let lastT = performance.now();
+
+    const onMove = (ev) => {
+      const now = performance.now();
+      const dx = ev.clientX - lastX;
+      const dAngle = dx * 0.32;
+      s.moved += Math.abs(dx);
+      s.angle += dAngle;
+      const instant = (dAngle / Math.max(1, now - lastT)) * 1000;
+      s.vel = Math.max(-420, Math.min(420, s.vel * 0.6 + instant * 0.4));
+      lastX = ev.clientX;
+      lastT = now;
+    };
+
+    const onUp = () => {
+      s.dragging = false;
+      if (performance.now() - lastT > 80) s.vel = 0;
+      stageRef.current?.classList.remove("is-dragging");
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+      window.removeEventListener("pointercancel", onUp);
+    };
+
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+    window.addEventListener("pointercancel", onUp);
+  };
+
+  // Tombol panah: putar tepat satu kartu
+  const rotateBy = (direction) => {
+    const s = motionState.current;
+    const base = s.target !== null ? s.target : Math.round(s.angle / step) * step;
+    s.target = base + direction * step;
+    s.vel = 0;
+  };
+
+  // Navigasi keyboard (Tab): kartu yang difokuskan diputar ke depan
+  const handleFocus = (e, index) => {
+    if (!e.currentTarget.matches(":focus-visible")) return;
+    const s = motionState.current;
+    const wanted = -index * step;
+    s.target = wanted + 360 * Math.round((s.angle - wanted) / 360);
+  };
+
+  // Klik biasa membuka popup, tapi bukan kalau barusan di-drag
+  const handleOpen = (item) => {
+    const s = motionState.current;
+    const moved = s.moved;
+    s.moved = 0;
+    if (moved > 6) return;
+    setActiveItem(item);
+  };
+
+  return (
+    <div className="wc-carousel">
+      <div
+        ref={stageRef}
+        className="wc-stage"
+        style={{ "--wc-w": `${cardW}px`, "--wc-h": `${cardH}px` }}
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="Galeri undangan pernikahan"
+        onPointerDown={handlePointerDown}
+        onPointerEnter={(e) => {
+          if (e.pointerType === "mouse") motionState.current.hover = true;
+        }}
+        onPointerLeave={() => {
+          motionState.current.hover = false;
+        }}
+      >
+        <div ref={ringRef} className="wc-ring">
+          {weddingInvitations.map((item, i) => (
+            <button
+              key={item.title}
+              ref={(el) => (cardRefs.current[i] = el)}
+              type="button"
+              className="wc-card"
+              style={{ transform: `rotateY(${i * step}deg) translateZ(${radius}px)` }}
+              aria-label={`Lihat detail ${item.title}`}
+              onClick={() => handleOpen(item)}
+              onFocus={(e) => handleFocus(e, i)}
+            >
+              <span className="wc-card-inner">
+                <span className="wc-card-img">
+                  <span className="wc-card-fallback">{item.title}</span>
+                  <img
+                    src={item.image}
+                    alt=""
+                    draggable={false}
+                    loading="lazy"
+                    onError={(e) => {
+                      e.currentTarget.style.display = "none";
+                    }}
+                  />
+                </span>
+                <span className="wc-card-title">{item.title}</span>
+              </span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div className="wc-controls">
+        <button
+          type="button"
+          className="wc-arrow"
+          aria-label="Undangan sebelumnya"
+          onClick={() => rotateBy(1)}
+        >
+          <ChevronIcon direction="left" />
+        </button>
+        <span className="wc-hint">Geser atau klik kartu untuk melihat detail</span>
+        <button
+          type="button"
+          className="wc-arrow"
+          aria-label="Undangan berikutnya"
+          onClick={() => rotateBy(-1)}
+        >
+          <ChevronIcon direction="right" />
+        </button>
+      </div>
+
+      <AnimatePresence>
+        {activeItem && (
+          <WeddingModal
+            key="wedding-modal"
+            item={activeItem}
+            onClose={() => setActiveItem(null)}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+}
+
 function Projects() {
   const [activeProject, setActiveProject] = useState(null);
 
@@ -646,6 +1038,18 @@ function Projects() {
             title={<span className="gradient-text">My Projects</span>}
             description="I made projects from company profile to portofolio website"
           />
+        </div>
+
+        {/* Carousel 3D undangan pernikahan, tepat di atas grid project */}
+        <div className="wc-block">
+          <div className="wc-head">
+            <span className="pj-card-category">Wedding Invitation</span>
+            <h3>Koleksi Undangan dan Ucapan Digital</h3>
+            <p>
+              Beberapa tema kartu undangan dan ucapan online yang pernah saya buat.
+            </p>
+          </div>
+          <WeddingCarousel />
         </div>
 
         <div className="pj-grid">
