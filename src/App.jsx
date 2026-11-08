@@ -628,11 +628,11 @@ const weddingInvitations = [
       "Undangan bertema taman dengan sentuhan floral yang hangat, lengkap dengan peta lokasi dan RSVP.",
   },
   {
-    title: "Undangan Modern Minimalis",
-    image: "/undangan/undangan-3.png",
-    websiteUrl: "",
+    title: "Kartu Ucapan Ulang Tahun",
+    image: "/kartu ultah.png",
+    websiteUrl: "https://kartu-ultah-weld.vercel.app/",
     description:
-      "Tampilan bersih dan modern dengan tipografi tegas, cocok untuk pasangan yang menyukai gaya simpel.",
+      "Kartu ucapan ulang tahun yang sangat interaktif dan dapat menyentuh hati.",
   },
   {
     title: "Undangan Adat Tradisional",
