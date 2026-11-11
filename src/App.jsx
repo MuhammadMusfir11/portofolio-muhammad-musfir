@@ -1,8 +1,14 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { createPortal } from "react-dom";
-import { motion, AnimatePresence } from "motion/react";
+import {
+  motion,
+  AnimatePresence,
+  useScroll,
+  useTransform,
+  useReducedMotion,
+} from "motion/react";
 
-const projects = [
+const baseProjects = [
   {
     title: " E-Commerce Website",
     image: "/ecommerce.png",
@@ -77,6 +83,140 @@ const projects = [
   },
 ];
 
+// Undangan & kartu ucapan digital: sekarang jadi bagian dari Projects
+const invitationProjects = [
+  {
+    title: "Undangan Klasik Elegan",
+    image: "/portofolio 7.png",
+    websiteUrl: "https://card-invitation-rose.vercel.app/",
+    description:
+      "Website undangan pernikahan yang interaktif, mudah dibuka dan memanjakan mata.",
+  },
+  {
+    title: "Kartu Ucapan Ulang Tahun",
+    image: "/kartu ultah.png",
+    websiteUrl: "https://kartu-ultah-weld.vercel.app/",
+    description:
+      "Kartu ucapan ulang tahun yang sangat interaktif dan dapat menyentuh hati.",
+  },
+].map((item) => ({
+  ...item,
+  githubUrl: "",
+  category: "Digital Invitation",
+  stack: [],
+}));
+
+const projects = [...baseProjects, ...invitationProjects];
+
+// Sertifikat
+const certificates = [
+  {
+    id: 1,
+    image: "/sertifikat excel.png",
+    title: "Microsoft Office Specialist - Excel",
+    event: "Microsoft Office Specialist Certification",
+    date: "07 october - 06 December 2024",
+  },
+  {
+    id: 2,
+    image: "/sertifikat tkj.jpg",
+    title: "Computer and Network Engineering",
+    event: "Final Assessment - Satisfactory",
+    date: "13 June 2023",
+  },
+  {
+    id: 3,
+    image: "/komdigi.jpg",
+    title: "Participants event",
+    event: "Participants event KOMDIGI",
+    date: "16 Agustus 2021",
+  },
+  {
+    id: 4,
+    image: "/sc.jpg",
+    title: "Steering Committe",
+    event: "Islamic Studies Sociology Department",
+    date: "21 Mei 2025",
+  },
+];
+
+// Penghargaan (juara Matematika x2 + Fisika)
+// TODO: cek lagi, sertifikat mana yang Matematika dan mana yang Fisika
+const awards = [
+  {
+    id: 1,
+    image: "/sertifikat kspi.png",
+    title: "Gold Medal Mathematics National",
+    event: "Kompetisi Sains Pelajar Se-Indonesia",
+  },
+  {
+    id: 2,
+    image: "/sertifikat osan.png",
+    title: "Gold Medal Mathematics National",
+    event: "Olimpiade Sains Akbar Nasional",
+  },
+  {
+    id: 3,
+    image: "/Sertifikat smart.png",
+    title: "Gold Medal Physics National",
+    event: "Smart Science & Social Challenge",
+  },
+  {
+    id: 4,
+    image: "/socio.png",
+    title: "Gold Medal Sociology National",
+    event: "Olimpiade Sains Akbar Nasional",
+  },
+];
+
+// Pendidikan & pengalaman (isi `period` kalau mau menampilkan tahun, mis. "2021 - 2024")
+const education = [
+  {
+    org: "UIN Sunan Gunung Djati Bandung",
+    title: "Faculty of Social and Political Sciences (FISIP)",
+    desc: "Sociology",
+    period: "Present",
+    tag: "Undergraduate",
+  },
+  {
+    org: "MAN 1 Kota Bandung",
+    title: "MIPA & Computer and Network Engineering (TKJ)",
+    desc: "",
+    period: "",
+    tag: "Senior High School",
+  },
+];
+
+const experience = [
+  {
+    org: "Kelurahan Kebonwaru",
+    title: "Media & IT Intern",
+    desc: "Menjadi bagian Media / IT selama magang di Kelurahan Kebonwaru.",
+    period: "",
+    tag: "Internship",
+  },
+  {
+    org: "Freelance",
+    title: "Website Development Services",
+    desc: "Menawarkan jasa pembuatan website untuk klien.",
+    period: "",
+    tag: "Freelance",
+  },
+  {
+    org: "Commercial Projects",
+    title: "Commercial Website Projects",
+    desc: "Membuat project website untuk 2 orang untuk kepentingan komersial.",
+    period: "",
+    tag: "Commercial",
+  },
+];
+
+const PORTFOLIO_TABS = [
+  { key: "projects", label: "Projects" },
+  { key: "certificates", label: "Certificates" },
+  { key: "awards", label: "Awards" },
+];
+
 const skills = [
   { name: "HTML", group: "FRONTEND" },
   { name: "CSS", group: "FRONTEND" },
@@ -129,10 +269,9 @@ function GitHubIcon() {
 }
 
 const NAV_LINKS = [
+  ["Home", "#welcome"],
   ["About", "#about"],
-  ["Projects", "#projects"],
-  ["Skills", "#skills"],
-  ["Achievements", "#certificates"],
+  ["Portfolio", "#portfolio"],
   ["Contact", "#contact"],
 ];
 
@@ -240,7 +379,7 @@ function Navbar() {
   return (
     <header className={`site-header ${scrolled ? "is-scrolled" : ""}`}>
       <nav className="navbar" aria-label="Main navigation">
-        <a className="brand" href="#home" aria-label="Home">
+        <a className="brand" href="#welcome" aria-label="Home">
           <span>
             MUHAMMAD MUSFIR AZZAHRANI ZEIN
             <span className="brand-dot"></span>
@@ -285,88 +424,36 @@ function Navbar() {
   );
 }
 
-function Hero() {
+function WelcomeIntro() {
+  const ref = useRef(null);
+  const reduceMotion = useReducedMotion();
+
+  // Progres scroll hanya selama layar welcome masih terlihat
+  const { scrollYProgress } = useScroll({
+    target: ref,
+    offset: ["start start", "end start"],
+  });
+
+  const scale = useTransform(scrollYProgress, [0, 1], [1, reduceMotion ? 1 : 1.35]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, reduceMotion ? 0 : -70]);
+  const opacity = useTransform(scrollYProgress, [0, 0.75], [1, 0]);
+
+  const lineMotion = (delay) => ({
+    initial: { opacity: 0, y: reduceMotion ? 0 : 36 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.8, delay, ease: [0.22, 1, 0.36, 1] },
+  });
+
   return (
-    <section className="hero section-shell" id="home">
-      <div className="hero-orb" aria-hidden="true" />
-      <div className="hero-grid container">
-        <motion.div
-          className="hero-copy"
-          initial={{ opacity: 0, y: 22 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, ease: "easeOut" }}
-        >
-          <div className="eyebrow">
-            <span className="status-dot" />
-            WEB DEVELOPER · PORTFOLIO
-          </div>
-
-          <h1>
-            <span className="gradient-text">Bringing Creative Concepts to Digital Life</span>
-          </h1>
-
-          <p className="hero-description">
-            Hi, I'm <strong>Muhammad Musfir Azzahrani Zein</strong>, A Web Developer specializing in crafting seamless
-            user interfaces and robust web solutions. Leveraging modern frameworks to deliver clean architecture,
-            optimal performance, and intuitive digital experiences from concept to production
-          </p>
-
-          <div className="hero-actions">
-            <a className="button button-primary" href="#projects">
-              Explore my work <ArrowIcon />
-            </a>
-            <a className="button button-secondary" href="#contact">
-              Get in touch
-            </a>
-          </div>
-
-          <div className="hero-meta">
-            <span>BASED IN BANDUNG CITY, WEST JAVA, INDONESIA</span>
-            <span className="meta-line" />
-            <span>AVAILABLE FOR OPPORTUNITIES</span>
-          </div>
-        </motion.div>
-
-        <motion.div
-          className="hero-visual"
-          initial={{ opacity: 0, scale: 0.96 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.85, delay: 0.15 }}
-        >
-          <div className="portrait-orbit orbit-one" />
-          <div className="portrait-orbit orbit-two" />
-
-
-          <div className="portrait-position">
-            <motion.div
-              className="portrait-motion"
-              whileHover={{
-                rotate: [0, 1, -1, 1, 0],
-                transition: {
-                  duration: 0.7,
-                  repeat: Infinity,
-                  ease: "easeInOut",
-                },
-              }}
-            >
-              <div className="portrait-glow" />
-
-              <img
-                className="portrait-image"
-                src="/foto profile.png"
-                alt="Foto Zahran"
-              />
-
-              <div className="portrait-bottom-fade" />
-            </motion.div>
-          </div>
-        </motion.div>
-      </div>
-
-      <a className="scroll-cue" href="#about">
-        <span className="scroll-line" />
-        SCROLL TO EXPLORE
-      </a>
+    <section className="welcome-intro" id="welcome" ref={ref}>
+      <motion.h1 className="welcome-title" style={{ scale, y, opacity }}>
+        <motion.span className="welcome-line" {...lineMotion(0.1)}>
+          Welcome
+        </motion.span>
+        <motion.span className="welcome-line" {...lineMotion(0.3)}>
+          To My Portfolio
+        </motion.span>
+      </motion.h1>
     </section>
   );
 }
@@ -382,66 +469,6 @@ function SectionHeading({ eyebrow, title, description }) {
 }
 
 
-
-function About() {
-  const navigationCards = [
-    {
-      title: "PROJECTS",
-      href: "#projects",
-    },
-    {
-      title: "TECHNOLOGIES",
-      href: "#skills",
-    },
-    {
-      title: "CERTIFICATES",
-      href: "#certificates",
-    },
-  ];
-
-  return (
-    <section className="about-section section-padding" id="about">
-      <div className="container">
-        <div className="about-heading">
-        </div>
-
-        {/* ABOUT ME */}
-        <article className="about-card about-profile-card">
-          <div className="about-profile-content">
-
-            <h3>
-              <span className="about-accent"></span>
-              {" "}About Me
-              <span className="about-accent">
-              </span>
-            </h3>
-
-            <p>
-              I am a Sociology student at UIN Sunan Gunung Djati Bandung with an academic background in Mathematics and Natural Sciences (MIPA) and Computer and Network Engineering (TKJ) from MAN 1 Kota Bandung.
-              I have a strong passion for programming and web development.
-              I enjoy building websites, exploring new technologies, and creating digital experiences that combine functionality, thoughtful design,
-              and user needs.
-            </p>
-          </div>
-        </article>
-
-        {/* THREE NAVIGATION CARDS */}
-        <div className="about-info-grid">
-          {navigationCards.map((item) => (
-            <a
-              className="about-card about-info-card"
-              href={item.href}
-              key={item.title}
-              aria-label={`Go to ${item.title} section`}
-            >
-              <h3>{item.title}</h3>
-            </a>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
 
 function ProjectPreview({ project }) {
   return (
@@ -553,14 +580,16 @@ function ProjectModal({ project, onClose }) {
             <p className="pj-modal-desc">{project.description}</p>
 
             {/* Teknologi yang dipakai */}
-            <div className="pj-stack">
-              {project.stack.map((item) => (
-                <span className="pj-tech" key={item}>
-                  {TECH_ICONS[item] && <img src={TECH_ICONS[item]} alt="" />}
-                  <span>{item}</span>
-                </span>
-              ))}
-            </div>
+            {project.stack?.length > 0 && (
+              <div className="pj-stack">
+                {project.stack.map((item) => (
+                  <span className="pj-tech" key={item}>
+                    {TECH_ICONS[item] && <img src={TECH_ICONS[item]} alt="" />}
+                    <span>{item}</span>
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Link website online + repository GitHub */}
@@ -606,65 +635,6 @@ function ProjectModal({ project, onClose }) {
   );
 }
 
-/* =====================================================
-   WEDDING INVITATION — carousel 3D melingkar
-   Ganti isi daftar di bawah dengan undangan buatan Anda.
-   Gambar taruh di folder public/undangan/
-   ===================================================== */
-
-const weddingInvitations = [
-  {
-    title: "Undangan Klasik Elegan",
-    image: "/portofolio 7.png",
-    websiteUrl: "https://card-invitation-rose.vercel.app/",
-    description:
-      "Website undangan pernikahan yang interaktif, mudah dibuka dan memanjakan mata.",
-  },
-  {
-    title: "Undangan Rustic Garden",
-    image: "/undangan/undangan-2.png",
-    websiteUrl: "",
-    description:
-      "Undangan bertema taman dengan sentuhan floral yang hangat, lengkap dengan peta lokasi dan RSVP.",
-  },
-  {
-    title: "Kartu Ucapan Ulang Tahun",
-    image: "/kartu ultah.png",
-    websiteUrl: "https://kartu-ultah-weld.vercel.app/",
-    description:
-      "Kartu ucapan ulang tahun yang sangat interaktif dan dapat menyentuh hati.",
-  },
-  {
-    title: "Undangan Adat Tradisional",
-    image: "/undangan/undangan-4.png",
-    websiteUrl: "",
-    description:
-      "Undangan dengan ornamen adat yang kental, dilengkapi musik latar dan susunan acara.",
-  },
-  {
-    title: "Undangan Royal Gold",
-    image: "/undangan/undangan-5.png",
-    websiteUrl: "",
-    description:
-      "Nuansa mewah dengan aksen emas dan transisi halus untuk kesan acara yang megah.",
-  },
-  {
-    title: "Undangan Pastel Floral",
-    image: "/undangan/undangan-6.png",
-    websiteUrl: "",
-    description:
-      "Warna pastel lembut dengan ilustrasi bunga, ringan dibuka di HP dan nyaman dibaca.",
-  },
-];
-
-function getWeddingCardSize() {
-  if (typeof window === "undefined") return 220;
-  const w = window.innerWidth;
-  if (w < 480) return 142;
-  if (w < 768) return 176;
-  return 220;
-}
-
 function ChevronIcon({ direction = "left" }) {
   return (
     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
@@ -679,10 +649,365 @@ function ChevronIcon({ direction = "left" }) {
   );
 }
 
-function WeddingModal({ item, onClose }) {
+
+function DocIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M7 3h7l5 5v13H7V3Zm7 0v5h5M10 13h6M10 17h6"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function CodeIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="m8 8-4 4 4 4m8-8 4 4-4 4m-5-10-2 12"
+        stroke="currentColor"
+        strokeWidth="1.7"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function BadgeIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <circle cx="12" cy="9" r="5.5" stroke="currentColor" strokeWidth="1.6" />
+      <path
+        d="m8.5 13.5-1.5 7 5-2.8 5 2.8-1.5-7"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+function TrophyIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M8 4h8v5a4 4 0 0 1-8 0V4Zm0 2H4v1a4 4 0 0 0 4 4m8-5h4v1a4 4 0 0 1-4 4M12 13v4m-4 3h8m-6-3h4"
+        stroke="currentColor"
+        strokeWidth="1.6"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+const TAB_ICONS = {
+  projects: CodeIcon,
+  certificates: BadgeIcon,
+  awards: TrophyIcon,
+};
+
+/* =====================================================
+   ABOUT — "Hi, I'm ..." + Education / Experience + folder
+   ===================================================== */
+
+function Timeline({ title, items }) {
+  return (
+    <div className="tl">
+      <h3 className="tl-title">{title}</h3>
+      <ol className="tl-list">
+        {items.map((item, index) => (
+          <li className="tl-item" key={item.title}>
+            <span className="tl-node">{index + 1}</span>
+            <div className="tl-body">
+              <div className="tl-top">
+                <span className="tl-org">{item.org}</span>
+                {item.period && <span className="tl-chip">{item.period}</span>}
+              </div>
+              <h4>{item.title}</h4>
+              {item.desc && <p>{item.desc}</p>}
+              {item.tag && <span className="tl-tag">{item.tag}</span>}
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  );
+}
+
+function FolderCard({ count, label, image, onClick }) {
+  return (
+    <button
+      type="button"
+      className="folder"
+      onClick={onClick}
+      aria-label={`Buka ${label}`}
+    >
+      <span className="folder-back" aria-hidden="true" />
+      <span className="folder-sheet" aria-hidden="true">
+        {image && <img src={image} alt="" draggable={false} />}
+      </span>
+      <span className="folder-front">
+        <span className="folder-info">
+          <strong>{count}</strong>
+          <span>{label}</span>
+        </span>
+        <span className="folder-go" aria-hidden="true">
+          <ArrowIcon />
+        </span>
+      </span>
+    </button>
+  );
+}
+
+function About({ onOpenPortfolio }) {
+  return (
+    <section className="ab-section" id="about">
+      <div className="container">
+        <h2 className="ab-title">About Me</h2>
+
+        <div className="ab-hero">
+          <div className="ab-intro">
+            <p className="ab-hi">Hi, I'm</p>
+            <h3 className="ab-fullname">Muhammad Musfir Azzahrani Zein</h3>
+            {/* Taruh file CV kamu di folder public dengan nama cv.pdf */}
+            <a className="ab-btn" href="/cv.pdf" target="_blank" rel="noopener noreferrer">
+              <DocIcon />
+              View CV
+            </a>
+          </div>
+
+          <div className="ab-photo">
+            <img src="/foto profile.png" alt="Foto Zahran" draggable={false} />
+          </div>
+
+          <div className="ab-text">
+            <p>
+              I am a Sociology student at UIN Sunan Gunung Djati Bandung with an academic
+              background in Mathematics and Natural Sciences (MIPA) and Computer and Network
+              Engineering (TKJ) from MAN 1 Kota Bandung. I have a strong passion for programming
+              and web development, and I enjoy building websites that combine functionality,
+              thoughtful design, and user needs.
+            </p>
+            <a
+              className="ab-btn"
+              href="#portfolio"
+              onClick={() => onOpenPortfolio("projects", false)}
+            >
+              <CodeIcon />
+              View Projects
+            </a>
+          </div>
+        </div>
+
+        <div className="ab-timelines">
+          <Timeline title="Education" items={education} />
+          <Timeline title="Experience" items={experience} />
+        </div>
+
+        <div className="ab-folders">
+          <FolderCard
+            count={projects.length}
+            label="Projects"
+            image={projects[0]?.image}
+            onClick={() => onOpenPortfolio("projects")}
+          />
+          <FolderCard
+            count={certificates.length}
+            label="Certificates"
+            image={certificates[0]?.image}
+            onClick={() => onOpenPortfolio("certificates")}
+          />
+          <FolderCard
+            count={awards.length}
+            label="Awards"
+            image={awards[0]?.image}
+            onClick={() => onOpenPortfolio("awards")}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* =====================================================
+   PORTFOLIO — tab Projects / Certificates / Awards,
+   masing-masing berupa baris memanjang yang bisa digeser
+   ===================================================== */
+
+function PortfolioTrack({ label, children }) {
+  const trackRef = useRef(null);
+  const dragRef = useRef({ pending: false, active: false, startX: 0, startScroll: 0, moved: false });
+  const [isDragging, setIsDragging] = useState(false);
+  const [edge, setEdge] = useState({ start: true, end: false });
+
+  const updateEdge = useCallback(() => {
+    const el = trackRef.current;
+    if (!el) return;
+    setEdge({
+      start: el.scrollLeft <= 4,
+      end: el.scrollLeft + el.clientWidth >= el.scrollWidth - 4,
+    });
+  }, []);
+
+  useEffect(() => {
+    updateEdge();
+    const el = trackRef.current;
+    window.addEventListener("resize", updateEdge);
+    // Gambar yang baru selesai dimuat mengubah lebar baris
+    el?.addEventListener("load", updateEdge, true);
+    return () => {
+      window.removeEventListener("resize", updateEdge);
+      el?.removeEventListener("load", updateEdge, true);
+    };
+  }, [updateEdge]);
+
+  const scrollByStep = (direction) => {
+    const el = trackRef.current;
+    if (!el) return;
+    el.scrollBy({
+      left: direction * Math.max(el.clientWidth * 0.8, 280),
+      behavior: "smooth",
+    });
+  };
+
+  // Geser pakai mouse. Sentuhan di HP sudah otomatis lewat scroll bawaan browser.
+  // Pointer baru "ditangkap" setelah bergeser beberapa piksel supaya klik biasa tetap jalan.
+  const onPointerDown = (e) => {
+    if (e.pointerType !== "mouse" || e.button !== 0) return;
+    const el = trackRef.current;
+    if (!el) return;
+    dragRef.current = {
+      pending: true,
+      active: false,
+      startX: e.clientX,
+      startScroll: el.scrollLeft,
+      moved: false,
+    };
+  };
+
+  const onPointerMove = (e) => {
+    const drag = dragRef.current;
+    const el = trackRef.current;
+    if (!drag.pending || !el) return;
+    const dx = e.clientX - drag.startX;
+    if (!drag.active) {
+      if (Math.abs(dx) < 6) return;
+      drag.active = true;
+      drag.moved = true;
+      setIsDragging(true);
+      el.setPointerCapture?.(e.pointerId);
+    }
+    el.scrollLeft = drag.startScroll - dx;
+  };
+
+  const endDrag = (e) => {
+    const drag = dragRef.current;
+    if (drag.active) {
+      trackRef.current?.releasePointerCapture?.(e.pointerId);
+      setIsDragging(false);
+    }
+    drag.pending = false;
+    drag.active = false;
+  };
+
+  // Setelah menggeser, jangan anggap itu klik pada kartu
+  const onClickCapture = (e) => {
+    if (dragRef.current.moved) {
+      e.preventDefault();
+      e.stopPropagation();
+      dragRef.current.moved = false;
+    }
+  };
+
+  const onKeyDown = (e) => {
+    if (e.key === "ArrowRight") {
+      e.preventDefault();
+      scrollByStep(1);
+    } else if (e.key === "ArrowLeft") {
+      e.preventDefault();
+      scrollByStep(-1);
+    }
+  };
+
+  return (
+    <>
+      <div
+        className={`pf-track ${isDragging ? "is-dragging" : ""}`}
+        ref={trackRef}
+        role="region"
+        aria-label={`${label}, geser ke kiri atau kanan`}
+        tabIndex={0}
+        onScroll={updateEdge}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onClickCapture={onClickCapture}
+        onKeyDown={onKeyDown}
+      >
+        {children}
+      </div>
+
+      <div className="pf-controls">
+        <button
+          type="button"
+          className="pf-arrow"
+          aria-label="Geser ke kiri"
+          disabled={edge.start}
+          onClick={() => scrollByStep(-1)}
+        >
+          <ChevronIcon direction="left" />
+        </button>
+        <span className="pf-hint">Geser ke kiri atau kanan untuk melihat lainnya</span>
+        <button
+          type="button"
+          className="pf-arrow"
+          aria-label="Geser ke kanan"
+          disabled={edge.end}
+          onClick={() => scrollByStep(1)}
+        >
+          <ChevronIcon direction="right" />
+        </button>
+      </div>
+    </>
+  );
+}
+
+function DocItem({ item, onOpen }) {
+  return (
+    <figure className="cert-item">
+      <button
+        type="button"
+        className="cert-open"
+        onClick={() => onOpen(item)}
+        aria-label={`Lihat ${item.title} - ${item.event}`}
+      >
+        <img className="cert-image" src={item.image} alt="" draggable={false} />
+        <span className="cert-view">
+          <SearchIcon />
+          View Certificate
+        </span>
+      </button>
+
+      <figcaption className="cert-caption">
+        <h3>{item.title}</h3>
+        <p className="cert-event">{item.event}</p>
+        <span className="cert-date">{item.date}</span>
+      </figcaption>
+    </figure>
+  );
+}
+
+function DocLightbox({ item, onClose }) {
   return createPortal(
     <motion.div
-      className="pj-backdrop wc-backdrop"
+      className="pj-backdrop"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
@@ -690,52 +1015,30 @@ function WeddingModal({ item, onClose }) {
       onClick={onClose}
     >
       <motion.div
-        className="wc-modal"
+        className="doc-lightbox"
         role="dialog"
         aria-modal="true"
-        aria-labelledby="wc-modal-title"
-        style={{ transformPerspective: 1100 }}
-        initial={{ opacity: 0, scale: 0.55, rotateY: -28, y: 30 }}
-        animate={{ opacity: 1, scale: 1, rotateY: 0, y: 0 }}
-        exit={{ opacity: 0, scale: 0.7, rotateY: 20, y: 20 }}
-        transition={{ type: "spring", stiffness: 260, damping: 24 }}
+        aria-label={item.title}
+        initial={{ opacity: 0, y: 30, scale: 0.98 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        exit={{ opacity: 0, y: 30, scale: 0.98 }}
+        transition={{ duration: 0.25, ease: "easeOut" }}
         onClick={(e) => e.stopPropagation()}
       >
         <button
           type="button"
           className="pj-close"
-          aria-label="Tutup detail undangan"
+          aria-label="Tutup"
           onClick={onClose}
           autoFocus
         >
           <CloseIcon />
         </button>
-
-        <div className="wc-modal-media">
-          <img src={item.image} alt={`Tampilan ${item.title}`} />
-        </div>
-
-        <div className="wc-modal-body">
-          <span className="pj-modal-category">Wedding Invitation</span>
-          <h3 id="wc-modal-title">{item.title}</h3>
-          <p className="pj-modal-desc">{item.description}</p>
-
-          {item.websiteUrl ? (
-            <a
-              className="pj-btn pj-btn-primary"
-              href={item.websiteUrl}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <GlobeIcon />
-              <span>Buka Undangan</span>
-            </a>
-          ) : (
-            <span className="pj-btn pj-btn-disabled">
-              <GlobeIcon />
-              <span>Link belum tersedia</span>
-            </span>
-          )}
+        <img src={item.image} alt={item.title} />
+        <div className="doc-lightbox-info">
+          <h3>{item.title}</h3>
+          <p>{item.event}</p>
+          <span>{item.date}</span>
         </div>
       </motion.div>
     </motion.div>,
@@ -743,62 +1046,33 @@ function WeddingModal({ item, onClose }) {
   );
 }
 
-function WeddingCarousel() {
-  const count = weddingInvitations.length;
-  const step = 360 / count;
+function Portfolio({ tab, setTab }) {
+  const [activeProject, setActiveProject] = useState(null);
+  const [activeDoc, setActiveDoc] = useState(null);
+  const reduceMotion = useReducedMotion();
 
-  const [cardW, setCardW] = useState(getWeddingCardSize);
-  const [activeItem, setActiveItem] = useState(null);
-
-  const stageRef = useRef(null);
-  const ringRef = useRef(null);
-  const cardRefs = useRef([]);
-
-  // Semua state animasi disimpan di ref supaya tidak re-render tiap frame
-  const motionState = useRef({
-    angle: 0, // sudut putar cincin (derajat)
-    vel: 0, // kecepatan saat ini (derajat/detik)
-    target: null, // sudut tujuan saat pakai tombol panah / fokus keyboard
-    dragging: false,
-    hover: false,
-    paused: false,
-    visible: true,
-    moved: 0, // jarak geser, untuk membedakan klik vs drag
+  // Teks besar "PORTFOLIO" membesar & muncul saat di-scroll
+  const wordRef = useRef(null);
+  const { scrollYProgress } = useScroll({
+    target: wordRef,
+    offset: ["start end", "end start"],
   });
+  const wordScale = useTransform(
+    scrollYProgress,
+    [0, 0.5, 1],
+    [reduceMotion ? 1 : 0.7, 1, reduceMotion ? 1 : 1.25]
+  );
+  const wordOpacity = useTransform(scrollYProgress, [0.05, 0.35, 0.65, 0.95], [0, 1, 1, 0]);
 
-  const cardH = Math.round(cardW * 1.4);
-  const radius =
-    Math.round(cardW / 2 / Math.tan(Math.PI / Math.max(count, 4))) +
-    (cardW < 200 ? 44 : 72);
-
-  // Ukuran kartu menyesuaikan lebar layar
+  // Tutup popup dengan Esc + kunci scroll halaman saat popup terbuka
   useEffect(() => {
-    const onResize = () => setCardW(getWeddingCardSize());
-    window.addEventListener("resize", onResize);
-    return () => window.removeEventListener("resize", onResize);
-  }, []);
-
-  // Animasi hanya jalan saat carousel terlihat di layar (hemat baterai)
-  useEffect(() => {
-    const el = stageRef.current;
-    if (!el || !("IntersectionObserver" in window)) return;
-    const io = new IntersectionObserver(
-      ([entry]) => {
-        motionState.current.visible = entry.isIntersecting;
-      },
-      { threshold: 0 }
-    );
-    io.observe(el);
-    return () => io.disconnect();
-  }, []);
-
-  // Popup terbuka: carousel berhenti, Esc menutup, scroll halaman dikunci
-  useEffect(() => {
-    motionState.current.paused = activeItem !== null;
-    if (!activeItem) return;
+    if (!activeProject && !activeDoc) return;
 
     const onKeyDown = (e) => {
-      if (e.key === "Escape") setActiveItem(null);
+      if (e.key === "Escape") {
+        setActiveProject(null);
+        setActiveDoc(null);
+      }
     };
     const previousOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
@@ -808,292 +1082,92 @@ function WeddingCarousel() {
       document.body.style.overflow = previousOverflow;
       window.removeEventListener("keydown", onKeyDown);
     };
-  }, [activeItem]);
-
-  // Loop animasi: putar otomatis kanan -> kiri + efek kedalaman 3D
-  useEffect(() => {
-    const s = motionState.current;
-    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    const AUTO_SPEED = reduceMotion ? 0 : -7; // minus = bergerak ke kiri
-    let raf;
-    let last = performance.now();
-
-    const render = () => {
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translateZ(${-radius}px) rotateY(${s.angle}deg)`;
-      }
-      cardRefs.current.forEach((el, i) => {
-        if (!el) return;
-        let phi = (i * step + s.angle) % 360;
-        if (phi > 180) phi -= 360;
-        if (phi < -180) phi += 360;
-        const facing = Math.cos((phi * Math.PI) / 180);
-        // Kartu di depan terang, kartu di samping meredup, yang membelakangi hilang
-        el.style.opacity = facing > 0 ? String(0.3 + 0.7 * facing) : "0";
-        el.style.pointerEvents = facing > 0.2 ? "auto" : "none";
-      });
-    };
-
-    const tick = (now) => {
-      const dt = Math.min(0.05, (now - last) / 1000);
-      last = now;
-
-      if (s.visible) {
-        if (!s.dragging) {
-          if (s.target !== null) {
-            const diff = s.target - s.angle;
-            if (Math.abs(diff) < 0.05) {
-              s.angle = s.target;
-              s.target = null;
-            } else {
-              s.angle += diff * Math.min(1, dt * 6);
-            }
-            s.vel = 0;
-          } else {
-            const goal = s.hover || s.paused ? 0 : AUTO_SPEED;
-            s.vel += (goal - s.vel) * Math.min(1, dt * 3);
-            s.angle += s.vel * dt;
-          }
-        }
-        render();
-      }
-      raf = requestAnimationFrame(tick);
-    };
-
-    raf = requestAnimationFrame(tick);
-    return () => cancelAnimationFrame(raf);
-  }, [radius, step]);
-
-  // Geser dengan mouse / jari untuk memutar manual (ada efek meluncur)
-  const handlePointerDown = (e) => {
-    if (e.pointerType === "mouse" && e.button !== 0) return;
-    const s = motionState.current;
-    s.dragging = true;
-    s.target = null;
-    s.moved = 0;
-    s.vel = 0;
-    stageRef.current?.classList.add("is-dragging");
-
-    let lastX = e.clientX;
-    let lastT = performance.now();
-
-    const onMove = (ev) => {
-      const now = performance.now();
-      const dx = ev.clientX - lastX;
-      const dAngle = dx * 0.32;
-      s.moved += Math.abs(dx);
-      s.angle += dAngle;
-      const instant = (dAngle / Math.max(1, now - lastT)) * 1000;
-      s.vel = Math.max(-420, Math.min(420, s.vel * 0.6 + instant * 0.4));
-      lastX = ev.clientX;
-      lastT = now;
-    };
-
-    const onUp = () => {
-      s.dragging = false;
-      if (performance.now() - lastT > 80) s.vel = 0;
-      stageRef.current?.classList.remove("is-dragging");
-      window.removeEventListener("pointermove", onMove);
-      window.removeEventListener("pointerup", onUp);
-      window.removeEventListener("pointercancel", onUp);
-    };
-
-    window.addEventListener("pointermove", onMove);
-    window.addEventListener("pointerup", onUp);
-    window.addEventListener("pointercancel", onUp);
-  };
-
-  // Tombol panah: putar tepat satu kartu
-  const rotateBy = (direction) => {
-    const s = motionState.current;
-    const base = s.target !== null ? s.target : Math.round(s.angle / step) * step;
-    s.target = base + direction * step;
-    s.vel = 0;
-  };
-
-  // Navigasi keyboard (Tab): kartu yang difokuskan diputar ke depan
-  const handleFocus = (e, index) => {
-    if (!e.currentTarget.matches(":focus-visible")) return;
-    const s = motionState.current;
-    const wanted = -index * step;
-    s.target = wanted + 360 * Math.round((s.angle - wanted) / 360);
-  };
-
-  // Klik biasa membuka popup, tapi bukan kalau barusan di-drag
-  const handleOpen = (item) => {
-    const s = motionState.current;
-    const moved = s.moved;
-    s.moved = 0;
-    if (moved > 6) return;
-    setActiveItem(item);
-  };
+  }, [activeProject, activeDoc]);
 
   return (
-    <div className="wc-carousel">
-      <div
-        ref={stageRef}
-        className="wc-stage"
-        style={{ "--wc-w": `${cardW}px`, "--wc-h": `${cardH}px` }}
-        role="region"
-        aria-roledescription="carousel"
-        aria-label="Galeri undangan pernikahan"
-        onPointerDown={handlePointerDown}
-        onPointerEnter={(e) => {
-          if (e.pointerType === "mouse") motionState.current.hover = true;
-        }}
-        onPointerLeave={() => {
-          motionState.current.hover = false;
-        }}
-      >
-        <div ref={ringRef} className="wc-ring">
-          {weddingInvitations.map((item, i) => (
+    <section className="pf-section" id="portfolio">
+      <div className="pf-bigword" ref={wordRef}>
+        <motion.h2 style={{ scale: wordScale, opacity: wordOpacity }}>Portfolio</motion.h2>
+      </div>
+
+      <div className="pf-tabs" role="tablist" aria-label="Kategori portfolio">
+        {PORTFOLIO_TABS.map(({ key, label }) => {
+          const Icon = TAB_ICONS[key];
+          const isActive = tab === key;
+          return (
             <button
-              key={item.title}
-              ref={(el) => (cardRefs.current[i] = el)}
+              key={key}
               type="button"
-              className="wc-card"
-              style={{ transform: `rotateY(${i * step}deg) translateZ(${radius}px)` }}
-              aria-label={`Lihat detail ${item.title}`}
-              onClick={() => handleOpen(item)}
-              onFocus={(e) => handleFocus(e, i)}
+              role="tab"
+              aria-selected={isActive}
+              className={`pf-tab ${isActive ? "is-active" : ""}`}
+              onClick={() => setTab(key)}
             >
-              <span className="wc-card-inner">
-                <span className="wc-card-img">
-                  <span className="wc-card-fallback">{item.title}</span>
-                  <img
-                    src={item.image}
-                    alt=""
-                    draggable={false}
-                    loading="lazy"
-                    onError={(e) => {
-                      e.currentTarget.style.display = "none";
-                    }}
-                  />
-                </span>
-                <span className="wc-card-title">{item.title}</span>
+              {isActive && (
+                <motion.span
+                  layoutId="pf-tab-pill"
+                  className="pf-tab-pill"
+                  transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                />
+              )}
+              <span className="pf-tab-label">
+                <Icon />
+                {label}
               </span>
             </button>
-          ))}
-        </div>
+          );
+        })}
       </div>
 
-      <div className="wc-controls">
-        <button
-          type="button"
-          className="wc-arrow"
-          aria-label="Undangan sebelumnya"
-          onClick={() => rotateBy(1)}
-        >
-          <ChevronIcon direction="left" />
-        </button>
-        <span className="wc-hint">Geser atau klik kartu untuk melihat detail</span>
-        <button
-          type="button"
-          className="wc-arrow"
-          aria-label="Undangan berikutnya"
-          onClick={() => rotateBy(-1)}
-        >
-          <ChevronIcon direction="right" />
-        </button>
-      </div>
+      <motion.div
+        key={tab}
+        role="tabpanel"
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.35, ease: "easeOut" }}
+      >
+        <PortfolioTrack label={`Daftar ${tab}`}>
+          {tab === "projects" &&
+            projects.map((project) => (
+              <article className="pj-card" key={project.title}>
+                <div className="pj-card-media">
+                  {project.image ? (
+                    <img src={project.image} alt="" loading="lazy" draggable={false} />
+                  ) : (
+                    <ProjectPreview project={project} />
+                  )}
+                </div>
 
-      <AnimatePresence>
-        {activeItem && (
-          <WeddingModal
-            key="wedding-modal"
-            item={activeItem}
-            onClose={() => setActiveItem(null)}
-          />
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
+                <div className="pj-card-overlay">
+                  <span className="pj-card-category">{project.category}</span>
+                  <h3 className="pj-card-title">{project.title.trim()}</h3>
+                  <span className="pj-card-hint">
+                    <SearchIcon />
+                    Klik untuk lihat detail &amp; deskripsi
+                  </span>
+                </div>
 
-function Projects() {
-  const [activeProject, setActiveProject] = useState(null);
+                {/* Tombol transparan menutupi seluruh kartu */}
+                <button
+                  type="button"
+                  className="pj-card-trigger"
+                  aria-label={`Lihat detail project ${project.title.trim()}`}
+                  onClick={() => setActiveProject(project)}
+                />
+              </article>
+            ))}
 
-  // Tutup dengan tombol Esc + kunci scroll halaman saat popup terbuka
-  useEffect(() => {
-    if (!activeProject) return;
+          {tab === "certificates" &&
+            certificates.map((item) => (
+              <DocItem key={item.id} item={item} onOpen={setActiveDoc} />
+            ))}
 
-    const onKeyDown = (e) => {
-      if (e.key === "Escape") setActiveProject(null);
-    };
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
-    window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      document.body.style.overflow = previousOverflow;
-      window.removeEventListener("keydown", onKeyDown);
-    };
-  }, [activeProject]);
-
-  return (
-    <section className="projects-section section-padding" id="projects">
-      <div className="container">
-        <div className="projects-heading-row">
-          <SectionHeading
-            title={<span className="gradient-text">My Projects</span>}
-            description="I made projects from company profile to portofolio website"
-          />
-        </div>
-
-        {/* Carousel 3D undangan pernikahan, tepat di atas grid project */}
-        <div className="wc-block">
-          <div className="wc-head">
-            <span className="pj-card-category">Wedding Invitation</span>
-            <h3>Koleksi Undangan dan Ucapan Digital</h3>
-            <p>
-              Beberapa tema kartu undangan dan ucapan online yang pernah saya buat.
-            </p>
-          </div>
-          <WeddingCarousel />
-        </div>
-
-        <div className="pj-grid">
-          {projects.map((project, index) => (
-            <motion.article
-              className="pj-card"
-              key={project.title}
-              initial={{ opacity: 0, y: 18 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, amount: 0.15 }}
-              transition={{ duration: 0.45, delay: (index % 3) * 0.08 }}
-            >
-              <div className="pj-card-media">
-                {project.image ? (
-                  <img
-                    src={project.image}
-                    alt=""
-                    loading="lazy"
-                  />
-                ) : (
-                  <ProjectPreview project={project} />
-                )}
-              </div>
-
-              <div className="pj-card-overlay">
-                <span className="pj-card-category">{project.category}</span>
-                <h3 className="pj-card-title">{project.title.trim()}</h3>
-                <span className="pj-card-hint">
-                  <SearchIcon />
-                  Klik untuk lihat detail &amp; deskripsi
-                </span>
-              </div>
-
-              {/* Tombol transparan menutupi seluruh kartu */}
-              <button
-                type="button"
-                className="pj-card-trigger"
-                aria-label={`Lihat detail project ${project.title.trim()}`}
-                onClick={() => setActiveProject(project)}
-              />
-            </motion.article>
-          ))}
-        </div>
-      </div>
+          {tab === "awards" &&
+            awards.map((item) => (
+              <DocItem key={item.id} item={item} onOpen={setActiveDoc} />
+            ))}
+        </PortfolioTrack>
+      </motion.div>
 
       <AnimatePresence>
         {activeProject && (
@@ -1101,6 +1175,13 @@ function Projects() {
             key="project-modal"
             project={activeProject}
             onClose={() => setActiveProject(null)}
+          />
+        )}
+        {activeDoc && (
+          <DocLightbox
+            key="doc-lightbox"
+            item={activeDoc}
+            onClose={() => setActiveDoc(null)}
           />
         )}
       </AnimatePresence>
@@ -1113,14 +1194,24 @@ function Skills() {
     { name: "HTML5", icon: "https://cdn.simpleicons.org/html5/E34F26" },
     { name: "CSS3", icon: "https://cdn.simpleicons.org/css/1572B6" },
     { name: "JavaScript", icon: "https://cdn.simpleicons.org/javascript/F7DF1E" },
-    { name: "React", icon: "https://cdn.simpleicons.org/react/61DAFB" },
-    { name: "Tailwind CSS", icon: "https://cdn.simpleicons.org/tailwindcss/06B6D4" },
-    { name: "Git", icon: "https://cdn.simpleicons.org/git/F05032" },
     { name: "Python", icon: "https://cdn.simpleicons.org/python/3776AB" },
     { name: "PHP", icon: "https://cdn.simpleicons.org/php/777BB4" },
-    { name: "MySQL", icon: "https://cdn.simpleicons.org/mysql/4479A1" },
-    { name: "Laravel", icon: "https://cdn.simpleicons.org/laravel/FF2D20" },
+    { name: "React", icon: "https://cdn.simpleicons.org/react/61DAFB" },
+    { name: "Vue.js", icon: "https://cdn.simpleicons.org/vuedotjs/4FC08D" },
+    { name: "Next.js", icon: "https://cdn.simpleicons.org/nextdotjs/000000" },
+    { name: "Nuxt.js", icon: "https://cdn.simpleicons.org/nuxt/00DC82" },
+    { name: "Tailwind CSS", icon: "https://cdn.simpleicons.org/tailwindcss/06B6D4" },
+    { name: "Bootstrap", icon: "https://cdn.simpleicons.org/bootstrap/7952B3" },
     { name: "Node.js", icon: "https://cdn.simpleicons.org/nodedotjs/5FA04E" },
+    { name: "Laravel", icon: "https://cdn.simpleicons.org/laravel/FF2D20" },
+    { name: "FastAPI", icon: "https://cdn.simpleicons.org/fastapi/009688" },
+    { name: "Django", icon: "https://cdn.simpleicons.org/django/092E20" },
+    { name: "MySQL", icon: "https://cdn.simpleicons.org/mysql/4479A1" },
+    { name: "Supabase", icon: "https://cdn.simpleicons.org/supabase/3FCF8E" },
+    { name: "MongoDB", icon: "https://cdn.simpleicons.org/mongodb/47A248" },
+    { name: "Firebase", icon: "https://cdn.simpleicons.org/firebase/FFCA28" },
+    { name: "Git", icon: "https://cdn.simpleicons.org/git/F05032" },
+    { name: "Laragon", icon: "https://cdn.simpleicons.org/laragon/0E83CD" },
   ];
 
   return (
@@ -1173,110 +1264,22 @@ function Skills() {
   );
 }
 
-function CertificatesPage() {
-  const certificates = [
-    {
-      id: 1,
-      image: "/sertifikat excel.png",
-      title: "Microsoft Office Specialist - Excel",
-      event: "Microsoft Office Specialist Certification",
-      date: "07 october - 06 December 2024",
-    },
-    {
-      id: 2,
-      image: "/sertifikat kspi.png",
-      title: "Certificate of Achievement",
-      event: "Kompetisi Sains Pelajar Se-Indonesia",
-      date: "28 July 2024",
-    },
-    {
-      id: 3,
-      image: "/sertifikat osan.png",
-      title: "Certificate of Achievement",
-      event: "Olimpiade Sains Akbar Nasional",
-      date: "11 August 2024",
-    },
-    {
-      id: 4,
-      image: "/Sertifikat smart.png",
-      title: "Certificate of Achievement",
-      event: "Smart Science & Social Challenge",
-      date: "5 - 7 April 2024",
-    },
-    {
-      id: 5,
-      image: "/sertifikat tkj.jpg",
-      title: "Computer and Network Engineering",
-      event: "Final Assessment - Satisfactory",
-      date: "13 June 2023",
-      orientation: "portrait",
-    },
-  ];
-
-  return (
-    <section
-      id="certificates"
-      className="certificates-page">
-      <div className="certificates-container">
-        <header className="certificates-heading">
-          <p className="certificates-eyebrow">
-            ACHIEVEMENTS & RECOGNITION
-          </p>
-
-          <h1>
-            Certificates<span></span>
-          </h1>
-        </header>
-
-        <div className="certificates-grid">
-          {certificates.map((certificate) => (
-            <article
-              className="certificate-card"
-              key={certificate.id}
-            >
-              <div
-                className="certificate-image-wrap"
-                style={{
-                  "--certificate-image": `url("${certificate.image}")`,
-                }}
-              >
-                <img
-                  src={certificate.image}
-                  alt={certificate.title}
-                  className="certificate-image"
-                />
-              </div>
-
-              <div className="certificate-content">
-                <h2>{certificate.title}</h2>
-
-                <p className="certificate-event">
-                  {certificate.event}
-                </p>
-
-                <span className="certificate-date">
-                  {certificate.date}
-                </span>
-              </div>
-            </article>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function Contact() {
   const socialLinks = [
     {
-      name: "Instagram",
-      url: "https://www.instagram.com/zahranmusfir_?xtok=bjdrczZtM2ZvM2p2",
-      icon: "https://cdn.simpleicons.org/instagram/E4405F",
+      name: "Github",
+      url: "https://github.com/MuhammadMusfir11",
+      icon: "https://cdn.simpleicons.org/github",
     },
     {
       name: "LinkedIn",
       url: "https://www.linkedin.com/in/muhammad-musfir-847096305?utm_source=share_via&utm_content=profile&utm_medium=member_android",
       icon: "https://api.iconify.design/mdi/linkedin.svg?color=%230A66C2",
+    },
+    {
+      name: "Instagram",
+      url: "https://www.instagram.com/zahranmusfir_?xtok=bjdrczZtM2ZvM2p2",
+      icon: "https://cdn.simpleicons.org/instagram/E4405F",
     },
     {
       name: "TikTok",
@@ -1287,11 +1290,6 @@ function Contact() {
       name: "YouTube",
       url: "https://youtube.com/@muhammadmusfir98?si=2TSI3HMBdTEXlOGr",
       icon: "https://cdn.simpleicons.org/youtube/FF0033",
-    },
-    {
-      name: "Facebook",
-      url: "https://www.facebook.com/share/19m8TmG8LH/",
-      icon: "https://cdn.simpleicons.org/facebook/0866FF",
     },
   ];
 
@@ -1359,7 +1357,7 @@ function Footer() {
     <footer className="site-footer">
       <div className="container footer-inner">
         <span>DESIGNED & BUILT WITH INTENTION.</span>
-        <a className="back-top" href="#home">
+        <a className="back-top" href="#welcome">
           BACK TO TOP ↑
         </a>
       </div>
@@ -1368,6 +1366,20 @@ function Footer() {
 }
 
 export default function App() {
+  const [tab, setTab] = useState("projects");
+
+  // Dipakai tombol "View Projects" dan kartu folder di bagian About
+  const openPortfolio = useCallback((key, scroll = true) => {
+    setTab(key);
+    if (scroll) {
+      requestAnimationFrame(() => {
+        document
+          .getElementById("portfolio")
+          ?.scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+    }
+  }, []);
+
   return (
     <div className="portfolio-app">
       <div className="cosmic-background" aria-hidden="true">
@@ -1412,24 +1424,18 @@ export default function App() {
       <Navbar />
 
       <main>
+        <WelcomeIntro />
+
         <ScrollReveal>
-          <Hero />
+          <About onOpenPortfolio={openPortfolio} />
         </ScrollReveal>
 
         <ScrollReveal>
-          <About />
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <Projects />
+          <Portfolio tab={tab} setTab={setTab} />
         </ScrollReveal>
 
         <ScrollReveal>
           <Skills />
-        </ScrollReveal>
-
-        <ScrollReveal>
-          <CertificatesPage />
         </ScrollReveal>
 
         <ScrollReveal>
